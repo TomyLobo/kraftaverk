@@ -56,13 +56,13 @@ QAbstractGraphicsShapeItem * Block::dCircle(Position const & center, qreal radiu
     return ret;
 }
 
-QGraphicsItem * Block::dLine(Position const & p1, Position const & p2)
+QGraphicsLineItem * Block::dLine(Position const & p1, Position const & p2)
 {
     Position p1p = getCoords(p1);
     Position p2p = getCoords(p2);
 
-    QGraphicsItem * ret = new QGraphicsLineItem(p1p.x, p1p.y, p2p.x, p2p.y);
-    ret->setZValue((p1p.z + p2p.z) / 4);
+    QGraphicsLineItem * ret = new QGraphicsLineItem(p1p.x, p1p.y, p2p.x, p2p.y);
+    ret->setZValue((p1p.z + p2p.z) / 2);
     return ret;
 }
 

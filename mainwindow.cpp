@@ -1,18 +1,18 @@
 #include "mainwindow.h"
 
-#include "blockstone.h"
-
 #include <QGridLayout>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent),
+    mWorld(0)
 {
-    setWindowTitle("Kraftaverk");
+    setWindowTitle("kraftaverk");
 
     QGridLayout * layout = new QGridLayout;
 
     mScene = new QGraphicsScene;
     mView = new QGraphicsView(mScene);
+    //mView->setRenderHint(QPainter::Antialiasing, true);
 
     layout->addWidget(mView, 0, 0);
 
@@ -24,9 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 void MainWindow::initWorld() {
-    mWorld = new World(mScene);
-
-    new BlockStone(Position(0, 0, 0), mWorld);
+    mWorld = new World("D:/Data/Dokumente/minecraft/rs_latch.red", mScene);
 
     mWorld->updateGeometry();
 }

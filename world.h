@@ -16,8 +16,11 @@ class World : public QObject
 private:
     QMap<Position, Block *> blocks;
 
+    void loadWorld(QString const & fileName);
+
 public:
     explicit World(QGraphicsScene * parent = 0);
+    World(QString const & fileName, QGraphicsScene * parent = 0);
     void insertBlock(Block * block);
     Position getCoords(Position const & position, double zOrderOverride = qInf());
     Projector projector;

@@ -16,11 +16,18 @@ SOURCES += main.cpp\
     world.cpp \
     position.cpp \
     blockstone.cpp \
-    projector.cpp
+    projector.cpp \
+    blocktorch.cpp \
+    blockbutton.cpp
 
 HEADERS  += mainwindow.h \
     block.h \
     world.h \
     position.h \
     blockstone.h \
-    projector.h
+    projector.h \
+    blocktorch.h \
+    helper.h \
+    blockbutton.h
+
+RESOURCES +=
