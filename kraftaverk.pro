@@ -30,6 +30,14 @@ HEADERS  += mainwindow.h \
     blocktorch.h \
     helper.h \
     blockbutton.h \
-    graphicsscene.h
+    graphicsscene.h \
+    mathlib/vector4.h \
+    mathlib/vector3.h \
+    mathlib/vector2.h \
+    mathlib/quaternion.h \
+    mathlib/matrix4.h \
+    mathlib/matrix3.h \
+    mathlib/mathlib.h \
+    mathlib/angle.h
 
 RESOURCES +=
