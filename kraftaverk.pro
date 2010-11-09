@@ -14,9 +14,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     block.cpp \
     world.cpp \
-    position.cpp \
-    blockstone.cpp \
     projector.cpp \
+    blockstone.cpp \
     blocktorch.cpp \
     blockbutton.cpp \
     graphicsscene.cpp
@@ -41,3 +40,5 @@ HEADERS  += mainwindow.h \
     mathlib/angle.h
 
 RESOURCES +=
+
+DEFINES += MATHLIB_NO_IOSTREAM MATHLIB_NO_EXCEPTION

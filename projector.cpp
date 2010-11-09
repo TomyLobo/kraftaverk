@@ -1,21 +1,29 @@
 #include "projector.h"
 
 Projector::Projector(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    projection(
+        2,  0, -2,
+        1, -2,  1,
+        1,  2,  1
+    ),
+    modelView(
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
+    )
 {
+    projection *= 16;
+    combineMatrix();
 }
 
 
 Position Projector::project(Position const & position)
 {
-    Position ret;
-    ret.x = 2*position.x                - 2*position.z;
-    ret.y =   position.x - 2*position.y +   position.z;
-    ret.z =   position.x + 2*position.y +   position.z;
-
-    ret.x *= 16;
-    ret.y *= 16;
-
-    return ret;
+    return combined * position;
 }
 
+void Projector::combineMatrix()
+{
+    combined = modelView * projection;
+}

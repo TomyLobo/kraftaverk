@@ -2,30 +2,8 @@
 #define POSITION_H
 
 #include <QtGlobal>
+#include "mathlib/vector3.h"
 
-class Position
-{
-public:
-    qreal x, y, z;
-
-public:
-    Position();
-    Position(qreal x, qreal y, qreal z);
-
-    bool operator<(Position const & other) const {
-        if (y == other.y) {
-            if (x == other.x) {
-                return z < other.z;
-            }
-            else {
-                return x < other.x;
-            }
-        }
-        else {
-            return y < other.y;
-        }
-
-    }
-};
+typedef vector3<qreal> Position;
 
 #endif // POSITION_H
