@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     blockstone.cpp \
     projector.cpp \
     blocktorch.cpp \
-    blockbutton.cpp
+    blockbutton.cpp \
+    graphicsscene.cpp
 
 HEADERS  += mainwindow.h \
     block.h \
@@ -28,6 +29,7 @@ HEADERS  += mainwindow.h \
     projector.h \
     blocktorch.h \
     helper.h \
-    blockbutton.h
+    blockbutton.h \
+    graphicsscene.h
 
 RESOURCES +=

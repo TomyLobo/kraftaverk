@@ -22,7 +22,7 @@ QList<QGraphicsItem *> BlockButton::getGeometry()
         offset.x ? buttonHeight : buttonWidth,
         offset.y ? buttonHeight : buttonWidth,
         offset.z ? buttonHeight : buttonWidth,
-        QColor(192,192,192)
+        QColor(192, 192, 192)
     );
 
     QGraphicsItem * buttonFace;
@@ -42,11 +42,18 @@ QList<QGraphicsItem *> BlockButton::getGeometry()
             break;
     }
 
-    /*
-    With buttonFace
-        .OnAction = "worldButton_Clicked"
-        .Name = "x" & x & "x" & y & "x" & z & "_" & .Name
-    End With
-    */
+    //buttonFace->setAcceptedMouseButtons(Qt::LeftButton);
+    QVariant v;
+    v.setValue(static_cast<QObject*>(this));
+    buttonFace->setData(123, v);
+    //connect(new QGraphicsScene, SIGNAL())
+
+    // TODO: make buttonFace clickable etc
     return ret;
+}
+
+void BlockButton::clicked()
+{
+    on = !on;
+    updateGeometry();
 }

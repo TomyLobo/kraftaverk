@@ -11,8 +11,12 @@ private:
 
 public:
     explicit BlockButton(Position const & position, World * parent = 0);
+    void clicked();
 
 signals:
+
+private slots:
+    //void clicked();
 
 public slots:
     virtual QList<QGraphicsItem *> getGeometry();

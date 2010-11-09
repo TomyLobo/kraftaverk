@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include "graphicsscene.h"
+
 #include <QGridLayout>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -10,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QGridLayout * layout = new QGridLayout;
 
-    mScene = new QGraphicsScene;
+    mScene = new GraphicsScene;
     mView = new QGraphicsView(mScene);
     //mView->setRenderHint(QPainter::Antialiasing, true);
 

@@ -18,6 +18,7 @@ public:
     explicit Block(Position const & position, World * parent = 0);
     Position const & position() { return mPosition; }
     Direction attachment;
+    virtual void clicked() {}
 
 protected:
     QList<QGraphicsItem*> parts;
