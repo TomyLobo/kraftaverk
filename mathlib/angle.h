@@ -10,6 +10,4 @@ template<typename T> class angle {
 		angle(T p, T y, T r) : p(p), y(y), r(r) { }
 };
 
-typedef angle<double> ang;
-
 #endif // ANGLE_H_

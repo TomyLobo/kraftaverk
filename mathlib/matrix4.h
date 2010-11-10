@@ -299,6 +299,4 @@ template<typename T> class matrix4 {
 #endif
 };
 
-typedef matrix4<double> mat4;
-
 #endif // MATRIX4_H_

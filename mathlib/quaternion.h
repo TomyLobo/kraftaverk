@@ -47,8 +47,8 @@ template<typename T> class quaternion {
 		explicit quaternion(vector3<T> const & imag) : real(0), imag(imag) { }
 		explicit quaternion(angle<T> const & ang) : real(1), imag(0, 0, 0) {
 			// TODO: fix axes
-			quaternion qp = rotation_quaternion(deg2rad(ang.p), vec3(1,0,0));
-			quaternion qy = rotation_quaternion(deg2rad(ang.y), vec3(0,1,0));
+                        quaternion qy = rotation_quaternion(deg2rad(ang.y), vec3(0,1,0));
+                        quaternion qp = rotation_quaternion(deg2rad(ang.p), vec3(1,0,0));
 			quaternion qr = rotation_quaternion(deg2rad(ang.r), vec3(0,0,1));
 			*this = qy*(qp*qr);
 		}
@@ -354,7 +354,5 @@ template<typename T> class quaternion {
 template<typename T> quaternion<T> const quaternion<T>::i(0,1,0,0);
 template<typename T> quaternion<T> const quaternion<T>::j(0,0,1,0);
 template<typename T> quaternion<T> const quaternion<T>::k(0,0,0,1);
-
-typedef quaternion<double> quat;
 
 #endif // QUATERNION_H_

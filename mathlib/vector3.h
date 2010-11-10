@@ -163,6 +163,4 @@ template<typename T> class vector3 {
                 }
 };
 
-typedef vector3<double> vec3;
-
 #endif // VECTOR3_H_

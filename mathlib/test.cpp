@@ -9,6 +9,14 @@
 
 using namespace std;
 
+typedef angle<double> ang;
+typedef matrix3<double> mat3;
+typedef matrix4<double> mat4;
+typedef quaternion<double> quat;
+typedef vector2<double> vec2;
+typedef vector3<double> vec3;
+typedef vector4<double> vec4;
+
 int main() {
 	cout << "--- Testing quaternions ---" << endl;
 	cout << "These should return -1:" << endl;
