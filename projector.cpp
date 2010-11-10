@@ -17,7 +17,7 @@ Projector::Projector(QObject *parent) :
     combineMatrix();
 }
 
-Position Projector::project(Position const & position)
+vec3 Projector::project(vec3 const & position)
 {
     return combined * position;
 }
@@ -39,4 +39,9 @@ void Projector::setYaw(qreal yaw)
         sy, 0,  cy
     );
     combineMatrix();
+}
+
+bool Projector::faceVisible(vec3 normal)
+{
+    return project(normal).z > 0;
 }

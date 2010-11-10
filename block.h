@@ -15,21 +15,27 @@ class Block : public QObject
 {
     Q_OBJECT
 public:
-    explicit Block(Position const & position, World * parent = 0);
-    Position const & position() { return mPosition; }
+    explicit Block(vec3 const & position, World * parent = 0);
+    vec3 const & position() { return mPosition; }
     Direction attachment;
     virtual void clicked() {}
 
 protected:
     QList<QGraphicsItem*> parts;
-    Position mPosition;
-    Position getCoords(Position const & position, double zOrderOverride = qInf())
+    vec3 mPosition;
+
+    World * world()
     {
-        return static_cast<World*>(parent())->getCoords(position, zOrderOverride);
+        return static_cast<World*>(parent());
     }
-    QAbstractGraphicsShapeItem * dQuad(Position const & p1, Position const & p2, Position const & p3, Position const & p4);
-    QGraphicsLineItem * dLine(Position const & p1, Position const & p2);
-    QAbstractGraphicsShapeItem * dCircle(Position const & center, qreal radius);
+
+    vec3 getCoords(vec3 const & position, double zOrderOverride = qInf())
+    {
+        return world()->getCoords(position, zOrderOverride);
+    }
+    QAbstractGraphicsShapeItem * dQuad(vec3 const & p1, vec3 const & p2, vec3 const & p3, vec3 const & p4);
+    QGraphicsLineItem * dLine(vec3 const & p1, vec3 const & p2);
+    QAbstractGraphicsShapeItem * dCircle(vec3 const & center, qreal radius);
     QList<QGraphicsItem *> boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & pen);
 
     virtual QList<QGraphicsItem *> getGeometry() = 0;

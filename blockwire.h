@@ -7,7 +7,7 @@ class BlockWire : public Block
 {
     Q_OBJECT
 public:
-    explicit BlockWire(Position const & position, World * parent = 0);
+    explicit BlockWire(vec3 const & position, World * parent = 0);
 
 signals:
 

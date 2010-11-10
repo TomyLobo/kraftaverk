@@ -46,7 +46,7 @@ void World::loadWorld(QString const & fileName)
             Q_ASSERT(line.size() == worldZSize * 2); // Unexpected line length
 
             for (int zp = 0; zp < worldZSize; ++zp) {
-                Position position(xp-worldXSize/2, yp-worldYSize/2, zp-worldZSize/2);
+                vec3 position(xp-worldXSize/2, yp-worldYSize/2, zp-worldZSize/2);
                 int linePos = (worldZSize - 1 - zp) * 2;
 
                 Block * lastBlock = 0;
@@ -105,8 +105,8 @@ void World::insertBlock(Block * block)
     blocks[block->position()] = block;
 }
 
-Position World::getCoords(Position const & position, double zOrderOverride) {
-    Position ret = projector.project(position);
+vec3 World::getCoords(vec3 const & position, double zOrderOverride) {
+    vec3 ret = projector.project(position);
     if (!qIsInf(zOrderOverride)) ret.z = zOrderOverride;
     return ret;
 }
@@ -119,4 +119,10 @@ void World::updateGeometry() {
     foreach(Block * block, blocks) {
         block->updateGeometry();
     }
+}
+
+bool World::sideVisible(Direction direction)
+{
+    vec3 normal = dirToOffset(direction);
+    return projector.faceVisible(normal);
 }

@@ -1,6 +1,6 @@
 #include "blockstone.h"
 
-BlockStone::BlockStone(Position const & position, World *parent) :
+BlockStone::BlockStone(vec3 const & position, World *parent) :
     Block(position, parent)
 {
 }

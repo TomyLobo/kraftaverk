@@ -7,7 +7,7 @@ class BlockStone : public Block
 {
     Q_OBJECT
 public:
-    explicit BlockStone(Position const & position, World * parent = 0);
+    explicit BlockStone(vec3 const & position, World * parent = 0);
 
 signals:
 

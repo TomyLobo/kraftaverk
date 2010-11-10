@@ -1,6 +1,6 @@
 #include "blockwire.h"
 
-BlockWire::BlockWire(Position const & position, World *parent) :
+BlockWire::BlockWire(vec3 const & position, World *parent) :
     Block(position, parent)
 {
 }

@@ -3,6 +3,8 @@
 
 #include "position.h"
 #include "projector.h"
+#include "helper.h"
+
 #include <QObject>
 #include <QMap>
 #include <QGraphicsScene>
@@ -14,15 +16,20 @@ class World : public QObject
 {
     Q_OBJECT
 private:
-    QMap<Position, Block *> blocks;
+    QMap<vec3, Block *> blocks;
 
     void loadWorld(QString const & fileName);
 
 public:
+    QGraphicsScene * scene()
+    {
+        return static_cast<QGraphicsScene*>(parent());
+    }
     explicit World(QGraphicsScene * parent = 0);
     World(QString const & fileName, QGraphicsScene * parent = 0);
     void insertBlock(Block * block);
-    Position getCoords(Position const & position, double zOrderOverride = qInf());
+    vec3 getCoords(vec3 const & position, double zOrderOverride = qInf());
+    bool sideVisible(Direction direction);
     Projector projector;
 
 signals:

@@ -10,7 +10,7 @@ private:
     bool on;
 
 public:
-    explicit BlockButton(Position const & position, World * parent = 0);
+    explicit BlockButton(vec3 const & position, World * parent = 0);
     void clicked();
 
 signals:

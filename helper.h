@@ -29,20 +29,20 @@ static inline Direction dirAdd(Direction direction, DirectionAdd directionAdd)
     return static_cast<Direction>(ret);
 }
 
-static inline Position dirToOffset(Direction direction)
+static inline vec3 dirToOffset(Direction direction)
 {
     switch(direction) {
-        case dirNone:  return Position( 0,  0,  0);
-        case dirDown:  return Position( 0, -1,  0);
-        case dirUp:    return Position( 0,  1,  0);
-        case dirEast:  return Position( 0,  0, -1);
-        case dirNorth: return Position(-1,  0,  0);
-        case dirWest:  return Position( 0,  0,  1);
-        case dirSouth: return Position( 1,  0,  0);
+        case dirNone:  return vec3( 0,  0,  0);
+        case dirDown:  return vec3( 0, -1,  0);
+        case dirUp:    return vec3( 0,  1,  0);
+        case dirEast:  return vec3( 0,  0, -1);
+        case dirNorth: return vec3(-1,  0,  0);
+        case dirWest:  return vec3( 0,  0,  1);
+        case dirSouth: return vec3( 1,  0,  0);
         default:
             Q_ASSERT(false);
     }
-    return Position();
+    return vec3();
 }
 
 #endif // HELPER_H

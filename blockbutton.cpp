@@ -1,6 +1,6 @@
 #include "blockbutton.h"
 
-BlockButton::BlockButton(Position const & position, World *parent) :
+BlockButton::BlockButton(vec3 const & position, World *parent) :
     Block(position, parent),
     on(false)
 {
@@ -13,7 +13,7 @@ QList<QGraphicsItem *> BlockButton::getGeometry()
     qreal buttonHeight = on ? 0.1 : 0.25;
     qreal buttonWidth = 0.5;
 
-    Position offset = dirToOffset(attachment);
+    vec3 offset = dirToOffset(attachment);
 
     ret << boxhelper(
         position().x + (offset.x ? (1 - buttonHeight) * (offset.x * 0.5 + 0.5) : 0.25),

@@ -11,7 +11,7 @@ private:
     bool on;
 
 public:
-    explicit BlockTorch(Position const & position, World * parent = 0);
+    explicit BlockTorch(vec3 const & position, World * parent = 0);
 
 signals:
 

@@ -18,7 +18,8 @@ private:
 
 public:
     explicit Projector(QObject *parent = 0);
-    Position project(Position const & position);
+    vec3 project(vec3 const & position);
+    bool faceVisible(vec3 normal);
 
     void setYaw(qreal yaw);
 

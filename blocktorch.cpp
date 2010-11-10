@@ -1,6 +1,6 @@
 #include "blocktorch.h"
 
-BlockTorch::BlockTorch(Position const & position, World *parent) :
+BlockTorch::BlockTorch(vec3 const & position, World *parent) :
     Block(position, parent),
     on(true)
 {}
@@ -9,22 +9,22 @@ QList<QGraphicsItem *> BlockTorch::getGeometry()
 {
     QList<QGraphicsItem *> ret;
 
-    Position bottom, top;
+    vec3 bottom, top;
     switch(attachment) {
         case dirEast:
         case dirWest:
         case dirNorth:
         case dirSouth:
             {
-                Position offset = dirToOffset(attachment);
-                bottom = Position(position().x + 0.5 + offset.x * 0.5, position().y + 0.25, position().z + 0.5 + offset.z * 0.5);
-                top    = Position(position().x + 0.5 + offset.x * 0.3, position().y + 0.70, position().z + 0.5 + offset.z * 0.3);
+                vec3 offset = dirToOffset(attachment);
+                bottom = vec3(position().x + 0.5 + offset.x * 0.5, position().y + 0.25, position().z + 0.5 + offset.z * 0.5);
+                top    = vec3(position().x + 0.5 + offset.x * 0.3, position().y + 0.70, position().z + 0.5 + offset.z * 0.3);
             }
             break;
 
         default:
-            bottom = Position(position().x + 0.5, position().y + 0.0, position().z + 0.5);
-            top    = Position(position().x + 0.5, position().y + 0.5, position().z + 0.5);
+            bottom = vec3(position().x + 0.5, position().y + 0.0, position().z + 0.5);
+            top    = vec3(position().x + 0.5, position().y + 0.5, position().z + 0.5);
             break;
     }
 
