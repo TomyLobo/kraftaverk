@@ -3,6 +3,7 @@
 #include "blockstone.h"
 #include "blocktorch.h"
 #include "blockbutton.h"
+#include "blockwire.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -31,6 +32,7 @@ void World::loadWorld(QString const & fileName)
     line = stream.readLine();
 
     QStringList arr = line.split('/');
+    Q_ASSERT(arr.size() == 3);
 
     int worldXSize = arr.at(0).toInt();
     int worldYSize = arr.at(1).toInt();
@@ -59,6 +61,10 @@ void World::loadWorld(QString const & fileName)
 
                     case 'b':
                         lastBlock = new BlockButton(position, this);
+                        break;
+
+                    case 'r':
+                        lastBlock = new BlockWire(position, this);
                         break;
                 }
 

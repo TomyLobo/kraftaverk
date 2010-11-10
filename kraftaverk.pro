@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     blockstone.cpp \
     blocktorch.cpp \
     blockbutton.cpp \
-    graphicsscene.cpp
+    graphicsscene.cpp \
+    blockwire.cpp
 
 HEADERS  += mainwindow.h \
     block.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     mathlib/matrix4.h \
     mathlib/matrix3.h \
     mathlib/mathlib.h \
-    mathlib/angle.h
+    mathlib/angle.h \
+    blockwire.h
 
 RESOURCES +=
 

@@ -11,8 +11,11 @@ public:
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent * mouseEvent);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent);
 
 signals:
+    void mouseDragged(QPointF const & delta);
 
 public slots:
 

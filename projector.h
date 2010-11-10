@@ -20,6 +20,8 @@ public:
     explicit Projector(QObject *parent = 0);
     Position project(Position const & position);
 
+    void setYaw(qreal yaw);
+
 signals:
     void changed();
 

@@ -17,7 +17,6 @@ Projector::Projector(QObject *parent) :
     combineMatrix();
 }
 
-
 Position Projector::project(Position const & position)
 {
     return combined * position;
@@ -25,5 +24,19 @@ Position Projector::project(Position const & position)
 
 void Projector::combineMatrix()
 {
-    combined = modelView * projection;
+    combined = projection * modelView;
+    emit changed();
+}
+
+void Projector::setYaw(qreal yaw)
+{
+    qreal cy = cos(yaw);
+    qreal sy = sin(yaw);
+
+    modelView = matrix3<qreal>(
+        cy, 0, -sy,
+         0, 1,   0,
+        sy, 0,  cy
+    );
+    combineMatrix();
 }

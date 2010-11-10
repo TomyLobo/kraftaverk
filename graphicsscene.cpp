@@ -10,25 +10,57 @@ GraphicsScene::GraphicsScene(QObject *parent) :
 {
 }
 
-
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent)
 {
-    /*QList<QGraphicsItem *> itemsUnderCursor = items(mouseEvent->scenePos());
-    if (itemsUnderCursor.isEmpty()) return;
+    if (mouseEvent->button() == Qt::RightButton) {
 
-    QGraphicsItem *item = itemsUnderCursor.at(0);*/
-    QGraphicsItem *item = itemAt(mouseEvent->scenePos());
-    if (!item) return;
+        mouseEvent->accept();
+        return;
+    }
 
-    if (!item->isEnabled()) return;
-    if (!(item->acceptedMouseButtons() & mouseEvent->button())) return;
+    do {
+        QGraphicsItem *item = itemAt(mouseEvent->scenePos());
+        if (!item) break;
 
-    Block * block = static_cast<Block*>(item->data(123).value<QObject*>());
-    if (!block) return;
+        if (!item->isEnabled()) break;
+        if (!(item->acceptedMouseButtons() & mouseEvent->button())) break;
 
-    block->clicked();
+        Block * block = static_cast<Block*>(item->data(123).value<QObject*>());
+        if (!block) break;
 
-    qDebug("clicked!");
+        block->clicked();
+
+        qDebug("clicked!");
+
+        mouseEvent->accept();
+        return;
+    } while (0);
 
     QGraphicsScene::mousePressEvent(mouseEvent);
+}
+
+void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent * mouseEvent)
+{
+    if (mouseEvent->buttons() & Qt::RightButton) {
+        QPointF delta = mouseEvent->screenPos() - mouseEvent->lastScreenPos();
+
+        emit mouseDragged(delta);
+
+        mouseEvent->accept();
+        return;
+    }
+
+    QGraphicsScene::mouseMoveEvent(mouseEvent);
+}
+
+void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent)
+{
+    if (mouseEvent->button() == Qt::RightButton) {
+
+
+        mouseEvent->accept();
+        return;
+    }
+
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }

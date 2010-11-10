@@ -44,6 +44,7 @@ QAbstractGraphicsShapeItem * Block::dQuad(Position const & p1, Position const & 
 
     QAbstractGraphicsShapeItem * ret = new QGraphicsPolygonItem(polygon);
     ret->setZValue((p1p.z + p2p.z + p3p.z + p4p.z) / 4);
+    ret->setPen(QPen(QBrush(QColor(0,0,0)),0.5));
     return ret;
 }
 
