@@ -29,11 +29,13 @@ void Block::updateGeometry()
 
 QAbstractGraphicsShapeItem * Block::dQuad(vec3 const & p1, vec3 const & p2, vec3 const & p3, vec3 const & p4)
 {
+    // projection
     vec3 p1p = getCoords(p1);
     vec3 p2p = getCoords(p2);
     vec3 p3p = getCoords(p3);
     vec3 p4p = getCoords(p4);
 
+    // generate polygon structure
     QPolygonF polygon;
 
     polygon
@@ -42,9 +44,15 @@ QAbstractGraphicsShapeItem * Block::dQuad(vec3 const & p1, vec3 const & p2, vec3
         << QPointF(p3p.x, p3p.y)
         << QPointF(p4p.x, p4p.y);
 
+    // generate polygon shape from it
     QAbstractGraphicsShapeItem * ret = new QGraphicsPolygonItem(polygon);
+
+    // set z value for z ordering
     ret->setZValue((p1p.z + p2p.z + p3p.z + p4p.z) / 4);
+
+    // reduce line size so it doesn't look crap with AA
     ret->setPen(QPen(QBrush(QColor(0,0,0)),0.5));
+
     return ret;
 }
 
