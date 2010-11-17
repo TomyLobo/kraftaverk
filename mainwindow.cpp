@@ -35,8 +35,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::initWorld() {
     mWorld = new World("rs_latch.red", mScene);
-
-    mWorld->updateGeometry();
 }
 
 void MainWindow::sceneMouseDragged(QPointF const & delta)

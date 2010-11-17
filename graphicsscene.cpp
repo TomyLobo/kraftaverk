@@ -30,8 +30,6 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent)
 
         block->clicked();
 
-        qDebug("clicked!");
-
         mouseEvent->accept();
         return;
     } while (0);

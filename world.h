@@ -32,11 +32,14 @@ public:
     bool sideVisible(Direction direction);
     Projector projector;
 
+    Block * blockAt(vec3 const & position);
+
 signals:
 
 private slots:
     void projectionChanged();
 public slots:
+    void redraw();
     void updateGeometry();
 };
 

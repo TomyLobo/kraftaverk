@@ -11,6 +11,7 @@ private:
 
 public:
     explicit BlockButton(vec3 const & position, World * parent = 0);
+    virtual BlockType type();
     void clicked();
 
 signals:

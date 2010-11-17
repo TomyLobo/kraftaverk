@@ -5,33 +5,28 @@ BlockTorch::BlockTorch(vec3 const & position, World *parent) :
     on(true)
 {}
 
+Block::BlockType BlockTorch::type()
+{
+    return btTorch;
+}
+
 QList<QGraphicsItem *> BlockTorch::getGeometry()
 {
     QList<QGraphicsItem *> ret;
 
     vec3 bottom, top;
-    switch(attachment) {
-        case dirEast:
-        case dirWest:
-        case dirNorth:
-        case dirSouth:
-            {
-                vec3 offset = dirToOffset(attachment);
-                bottom = vec3(position().x + 0.5 + offset.x * 0.5, position().y + 0.25, position().z + 0.5 + offset.z * 0.5);
-                top    = vec3(position().x + 0.5 + offset.x * 0.3, position().y + 0.70, position().z + 0.5 + offset.z * 0.3);
-            }
-            break;
+    vec3 bottom2, top2;
 
-        default:
-            bottom = vec3(position().x + 0.5, position().y + 0.0, position().z + 0.5);
-            top    = vec3(position().x + 0.5, position().y + 0.5, position().z + 0.5);
-            break;
-    }
+    vec3 offset = dirToOffset(attachment);
+    bottom = position() + vec3(0.5, 0.25, 0.5) + offset * vec3(0.5, 0.25, 0.5);
+    top    = position() + vec3(0.5, 0.70, 0.5) + offset * vec3(0.3, 0.20, 0.3);
 
-    QGraphicsLineItem * handle = dLine(bottom, top);
+    qreal centerz = getCoords(position() + vec3(0.5, 0.5, 0.5)).z;
+
+    QGraphicsLineItem * handle = dLine(bottom, top, centerz);
     ret << handle;
 
-    QAbstractGraphicsShapeItem * tip = dCircle(top, 5);
+    QAbstractGraphicsShapeItem * tip = dCircle(top, 5, centerz);
     ret << tip;
 
     handle->setPen(QPen(QBrush(QColor(128, 96, 0)), 3, Qt::SolidLine, Qt::RoundCap));

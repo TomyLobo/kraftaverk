@@ -98,6 +98,7 @@ void World::loadWorld(QString const & fileName)
             }
         }
     }
+    updateGeometry();
 }
 
 void World::insertBlock(Block * block)
@@ -112,7 +113,13 @@ vec3 World::getCoords(vec3 const & position, double zOrderOverride) {
 }
 
 void World::projectionChanged() {
-    updateGeometry();
+    redraw();
+}
+
+void World::redraw() {
+    foreach(Block * block, blocks) {
+        block->redraw();
+    }
 }
 
 void World::updateGeometry() {
@@ -125,4 +132,11 @@ bool World::sideVisible(Direction direction)
 {
     vec3 normal = dirToOffset(direction);
     return projector.faceVisible(normal);
+}
+
+Block * World::blockAt(vec3 const & position)
+{
+    if (!blocks.contains(position)) return 0;
+
+    return blocks[position];
 }

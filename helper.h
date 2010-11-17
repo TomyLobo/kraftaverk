@@ -8,7 +8,9 @@ enum Direction {
     dirEast = 3,
     dirNorth = 4,
     dirWest = 5,
-    dirSouth = 6
+    dirSouth = 6,
+    dirFirst = dirEast,
+    dirLast = dirSouth
 };
 
 enum DirectionAdd {

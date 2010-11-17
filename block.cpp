@@ -9,7 +9,6 @@ Block::Block(vec3 const & position, World *parent) :
     mPosition(position)
 {
     parent->insertBlock(this);
-    //QTimer::singleShot(0, this, SLOT(updateGeometry()));
 }
 
 void Block::updateGeometry()
@@ -27,13 +26,19 @@ void Block::updateGeometry()
     }
 }
 
-QAbstractGraphicsShapeItem * Block::dQuad(vec3 const & p1, vec3 const & p2, vec3 const & p3, vec3 const & p4)
+void Block::redraw()
+{
+    updateGeometry(); // TEMP!
+    //QGraphicsScene * scene = world()->scene();
+}
+
+QAbstractGraphicsShapeItem * Block::dQuad(vec3 const & p1, vec3 const & p2, vec3 const & p3, vec3 const & p4, double zOrderOverride)
 {
     // projection
-    vec3 p1p = getCoords(p1);
-    vec3 p2p = getCoords(p2);
-    vec3 p3p = getCoords(p3);
-    vec3 p4p = getCoords(p4);
+    vec3 p1p = getCoords(p1, zOrderOverride);
+    vec3 p2p = getCoords(p2, zOrderOverride);
+    vec3 p3p = getCoords(p3, zOrderOverride);
+    vec3 p4p = getCoords(p4, zOrderOverride);
 
     // generate polygon structure
     QPolygonF polygon;
@@ -56,26 +61,26 @@ QAbstractGraphicsShapeItem * Block::dQuad(vec3 const & p1, vec3 const & p2, vec3
     return ret;
 }
 
-QAbstractGraphicsShapeItem * Block::dCircle(vec3 const & center, qreal radius)
+QAbstractGraphicsShapeItem * Block::dCircle(vec3 const & center, qreal radius, double zOrderOverride)
 {
-    vec3 centerp = getCoords(center);
+    vec3 centerp = getCoords(center, zOrderOverride);
 
     QAbstractGraphicsShapeItem * ret = new QGraphicsEllipseItem(centerp.x-radius, centerp.y-radius, radius*2, radius*2);
     ret->setZValue(centerp.z);
     return ret;
 }
 
-QGraphicsLineItem * Block::dLine(vec3 const & p1, vec3 const & p2)
+QGraphicsLineItem * Block::dLine(vec3 const & p1, vec3 const & p2, double zOrderOverride)
 {
-    vec3 p1p = getCoords(p1);
-    vec3 p2p = getCoords(p2);
+    vec3 p1p = getCoords(p1, zOrderOverride);
+    vec3 p2p = getCoords(p2, zOrderOverride);
 
     QGraphicsLineItem * ret = new QGraphicsLineItem(p1p.x, p1p.y, p2p.x, p2p.y);
     ret->setZValue((p1p.z + p2p.z) / 2);
     return ret;
 }
 
-QList<QGraphicsItem *> Block::boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & pen)
+QList<QGraphicsItem *> Block::boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & pen, double zOrderOverride)
 {
     QBrush brushTop = pen;
 
@@ -92,17 +97,18 @@ QList<QGraphicsItem *> Block::boxhelper(double x, double y, double z, double xs,
         vec3(x     , y + ys, z     ),
         vec3(x + xs, y + ys, z     ),
         vec3(x + xs, y + ys, z + zs),
-        vec3(x     , y + ys, z + zs)
+        vec3(x     , y + ys, z + zs),
+        zOrderOverride
     ));
 
     if (world()->sideVisible(dirEast)) {
-    //if (false) {
         // east side
         ret << (EW = dQuad(
             vec3(x     , y     , z     ),
             vec3(x + xs, y     , z     ),
             vec3(x + xs, y + ys, z     ),
-            vec3(x     , y + ys, z     )
+            vec3(x     , y + ys, z     ),
+            zOrderOverride
         ));
     }
     else {
@@ -111,18 +117,19 @@ QList<QGraphicsItem *> Block::boxhelper(double x, double y, double z, double xs,
             vec3(x     , y     , z + zs),
             vec3(x + xs, y     , z + zs),
             vec3(x + xs, y + ys, z + zs),
-            vec3(x     , y + ys, z + zs)
+            vec3(x     , y + ys, z + zs),
+            zOrderOverride
         ));
     }
 
     if (world()->sideVisible(dirNorth)) {
-    //if (false) {
         // north side
         ret << (NS = dQuad(
             vec3(x     , y     , z     ),
             vec3(x     , y     , z + zs),
             vec3(x     , y + ys, z + zs),
-            vec3(x     , y + ys, z     )
+            vec3(x     , y + ys, z     ),
+            zOrderOverride
         ));
     }
     else {
@@ -131,7 +138,8 @@ QList<QGraphicsItem *> Block::boxhelper(double x, double y, double z, double xs,
             vec3(x + xs, y     , z     ),
             vec3(x + xs, y     , z + zs),
             vec3(x + xs, y + ys, z + zs),
-            vec3(x + xs, y + ys, z     )
+            vec3(x + xs, y + ys, z     ),
+            zOrderOverride
         ));
     }
 

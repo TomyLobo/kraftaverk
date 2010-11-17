@@ -5,6 +5,11 @@ BlockStone::BlockStone(vec3 const & position, World *parent) :
 {
 }
 
+Block::BlockType BlockStone::type()
+{
+    return btStone;
+}
+
 QList<QGraphicsItem *> BlockStone::getGeometry()
 {
     QList<QGraphicsItem *> ret;

@@ -6,6 +6,11 @@ BlockButton::BlockButton(vec3 const & position, World *parent) :
 {
 }
 
+Block::BlockType BlockButton::type()
+{
+    return btButton;
+}
+
 QList<QGraphicsItem *> BlockButton::getGeometry()
 {
     QList<QGraphicsItem *> ret;
@@ -46,9 +51,7 @@ QList<QGraphicsItem *> BlockButton::getGeometry()
     QVariant v;
     v.setValue(static_cast<QObject*>(this));
     buttonFace->setData(123, v);
-    //connect(new QGraphicsScene, SIGNAL())
 
-    // TODO: make buttonFace clickable etc
     return ret;
 }
 

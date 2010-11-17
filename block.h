@@ -10,17 +10,30 @@
 #include <QGraphicsItem>
 #include <qnumeric.h>
 
-
 class Block : public QObject
 {
     Q_OBJECT
 public:
-    explicit Block(vec3 const & position, World * parent = 0);
+    enum BlockType {
+        btAir = 0,
+        btStone = 1,
+        btWire = 55,
+        btDoor = 64,
+        btLever = 69,
+        btPressurePlate = 70,
+        btTorch = 75,
+        btButton = 77
+    };
+
+    virtual BlockType type() = 0;
     vec3 const & position() { return mPosition; }
     Direction attachment;
     virtual void clicked() {}
+    virtual bool allowsAttachment() { return false; }
 
 protected:
+    explicit Block(vec3 const & position, World * parent = 0);
+
     QList<QGraphicsItem*> parts;
     vec3 mPosition;
 
@@ -33,16 +46,17 @@ protected:
     {
         return world()->getCoords(position, zOrderOverride);
     }
-    QAbstractGraphicsShapeItem * dQuad(vec3 const & p1, vec3 const & p2, vec3 const & p3, vec3 const & p4);
-    QGraphicsLineItem * dLine(vec3 const & p1, vec3 const & p2);
-    QAbstractGraphicsShapeItem * dCircle(vec3 const & center, qreal radius);
-    QList<QGraphicsItem *> boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & pen);
+    QAbstractGraphicsShapeItem * dQuad(vec3 const & p1, vec3 const & p2, vec3 const & p3, vec3 const & p4, double zOrderOverride = qInf());
+    QGraphicsLineItem * dLine(vec3 const & p1, vec3 const & p2, double zOrderOverride = qInf());
+    QAbstractGraphicsShapeItem * dCircle(vec3 const & center, qreal radius, double zOrderOverride = qInf());
+    QList<QGraphicsItem *> boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & pen, double zOrderOverride = qInf());
 
     virtual QList<QGraphicsItem *> getGeometry() = 0;
 
 signals:
 
 public slots:
+    void redraw();
     void updateGeometry();
 };
 
