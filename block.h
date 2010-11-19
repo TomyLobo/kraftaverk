@@ -25,18 +25,19 @@ public:
         btButton = 77
     };
 
+    virtual ~Block();
     virtual BlockType type() = 0;
     vec3 const & position() { return mPosition; }
     Direction attachment;
     virtual void clicked() {}
     virtual bool allowsAttachment() { return false; }
-    virtual void setPower(bool on, Block * poweredFrom) {}
+    void setPower(bool on, Block * poweredFrom, Block * poweredVia);
+    virtual void setPower(bool on) {}
+    virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia) { return false; }
+    virtual void tick() {}
 
 protected:
     explicit Block(vec3 const & position, World * parent = 0);
-
-    QList<QGraphicsItem*> parts;
-    vec3 mPosition;
 
     World * world()
     {
@@ -53,6 +54,13 @@ protected:
     QList<QGraphicsItem *> boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & pen, double zOrderOverride = qInf());
 
     virtual QList<QGraphicsItem *> getGeometry() = 0;
+
+    void setTicked(bool ticked);
+
+private:
+    QList<QGraphicsItem*> parts;
+    vec3 mPosition;
+    QSet<Block *> powerSources;
 
 signals:
 

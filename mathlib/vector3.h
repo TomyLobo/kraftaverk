@@ -152,6 +152,14 @@ template<typename T> class vector3 {
 			return os << "vector3(" << v.x << ", " << v.y << ", " << v.z << ")";
 		}
 #endif
+                bool operator==(vector3 const & other) const {
+                    return x == other.x && y == other.y && z == other.z;
+                }
+
+                bool operator!=(vector3 const & other) const {
+                    return x != other.x || y != other.y || z != other.z;
+                }
+
                 bool operator<(vector3 const & other) const {
                     if (x != other.x)
                         return x < other.x;

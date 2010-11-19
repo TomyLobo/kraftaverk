@@ -135,7 +135,7 @@ QList<BlockWire *> BlockWire::unchargeConnectedWires()
             continue; // might work too and be faster
         }
         else {
-            wire->lastCharge = 0;
+            wire->setCharge(0);
             wire->updateGeometry(); // TODO: optimize
             cleared << wire;
         }
@@ -145,37 +145,33 @@ QList<BlockWire *> BlockWire::unchargeConnectedWires()
 }
 
 /*TODO:
-  - implement setPower for torches
+  - implement setPower for torches, with power source evaluation for validity
   - power all blocks around [implicit] wire target blocks and under them
 */
-void BlockWire::setPower(bool on, Block * poweredFrom)
+bool BlockWire::validPowerSource(Block * poweredFrom, Block * poweredVia)
 {
     // Wires can't be powered by wires. their charge is propagated elsewhere.
-    if (poweredFrom->type() == btWire) return;
+    return poweredFrom->type() != btWire;
+}
 
+void BlockWire::setPower(bool on)
+{
     if (on) {
-        powerSources << poweredFrom;
+        setCharge(15);
     }
     else {
-        powerSources.remove(poweredFrom);
-    }
-    if (powerSources.isEmpty()) {
         setCharge(0);
         QList<BlockWire *> sources = unchargeConnectedWires();
         foreach (BlockWire * source, sources) {
             source->setCharge(15);
         }
     }
-    else {
-        setCharge(15);
-    }
 }
 
 void BlockWire::setCharge(int charge)
 {
     lastCharge = charge;
-    --charge;
-    if (!charge) return;
+    if (charge > 0) --charge;
 
     foreach (Block * block, neighboringWires()) {
         Q_ASSERT(dynamic_cast<BlockWire *>(block));

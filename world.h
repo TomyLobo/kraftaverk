@@ -9,6 +9,7 @@
 #include <QMap>
 #include <QGraphicsScene>
 #include <qnumeric.h>
+#include <QSet>
 
 class Block;
 
@@ -19,6 +20,7 @@ private:
     QMap<vec3, Block *> blocks;
 
     void loadWorld(QString const & fileName);
+    QSet<Block*> tickedBlocks;
 
 public:
     QGraphicsScene * scene()
@@ -33,6 +35,8 @@ public:
     Projector projector;
 
     Block * blockAt(vec3 const & position);
+    void setTicked(Block *, bool ticked);
+    void tick();
 
 signals:
 

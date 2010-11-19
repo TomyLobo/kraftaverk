@@ -8,12 +8,15 @@ class BlockTorch : public Block
 {
     Q_OBJECT
 private:
-    bool on;
+    bool mOn;
+    bool nextOn;
 
 public:
     explicit BlockTorch(vec3 const & position, World * parent = 0);
     virtual BlockType type();
-    virtual void setPower(bool on, Block * poweredFrom);
+    virtual void setPower(bool on);
+    virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia);
+    virtual void tick();
 
 signals:
 

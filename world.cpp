@@ -140,3 +140,20 @@ Block * World::blockAt(vec3 const & position)
 
     return blocks[position];
 }
+
+void World::setTicked(Block * block, bool ticked)
+{
+    if (ticked) {
+        tickedBlocks += block;
+    }
+    else {
+        tickedBlocks -= block;
+    }
+}
+
+void World::tick()
+{
+    foreach (Block * block, tickedBlocks) {
+        block->tick();
+    }
+}

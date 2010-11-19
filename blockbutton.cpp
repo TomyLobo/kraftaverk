@@ -68,20 +68,21 @@ void BlockButton::setOn(bool on)
 
     vec3 attachedToPosition = position() + dirToOffset(static_cast<Direction>(attachment));
 
-    Q_ASSERT(world()->blockAt(attachedToPosition) && world()->blockAt(attachedToPosition)->allowsAttachment());
+    Block * attachedTo = world()->blockAt(attachedToPosition);
+
+    Q_ASSERT(attachedTo && attachedTo->allowsAttachment());
 
     for (int direction = dirFirstAll; direction != dirLastAll; ++direction) {
         vec3 offset = dirToOffset(static_cast<Direction>(direction));
-        // TODO: look for wires below and around the button
+
         vec3 pos1 = position() + offset;
-        // TODO: look for wires above, below and around the button's attachment block
         vec3 pos2 = attachedToPosition + offset;
 
         Block * block1 = world()->blockAt(pos1);
         Block * block2 = world()->blockAt(pos2);
 
-        if (block1) block1->setPower(mOn, this);
-        if (block2) block2->setPower(mOn, this);
+        if (block1) block1->setPower(mOn, this, 0);
+        if (block2) block2->setPower(mOn, this, attachedTo);
     }
 }
 

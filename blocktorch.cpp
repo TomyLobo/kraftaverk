@@ -2,7 +2,8 @@
 
 BlockTorch::BlockTorch(vec3 const & position, World *parent) :
     Block(position, parent),
-    on(true)
+    mOn(true),
+    nextOn(true)
 {}
 
 Block::BlockType BlockTorch::type()
@@ -32,10 +33,48 @@ QList<QGraphicsItem *> BlockTorch::getGeometry()
     handle->setPen(QPen(QBrush(QColor(128, 96, 0)), 3, Qt::SolidLine, Qt::RoundCap));
 
     tip->setPen(QPen(Qt::NoPen));
-    tip->setBrush(QBrush(on ? QColor(255, 0, 0) : QColor(64, 32, 0)));
+    tip->setBrush(QBrush(mOn ? QColor(255, 0, 0) : QColor(64, 32, 0)));
 
     return ret;
 }
-
-void BlockTorch::setPower(bool on, Block * poweredFrom)
+bool BlockTorch::validPowerSource(Block * poweredFrom, Block * poweredVia)
 {
+    return poweredVia && poweredVia->position() == position() + dirToOffset(attachment);
+}
+
+void BlockTorch::setPower(bool on)
+{
+    if (on != nextOn) return;
+
+    nextOn = !on;
+
+    tick(); // TEMP!
+}
+
+void BlockTorch::tick()
+{
+    if (mOn == nextOn) return;
+
+    mOn = nextOn;
+    updateGeometry(); // TODO: optimize
+
+    // maybe merge with blockwire into a helper function
+    vec3 abovePosition = position() + vec3(0, 1, 0);
+
+    Block * above = world()->blockAt(abovePosition);
+
+    Q_ASSERT(above && above->allowsAttachment());
+
+    for (int direction = dirFirstAll; direction != dirLastAll; ++direction) {
+        vec3 offset = dirToOffset(static_cast<Direction>(direction));
+
+        vec3 pos1 = position() + offset;
+        vec3 pos2 = abovePosition + offset;
+
+        Block * block1 = world()->blockAt(pos1);
+        Block * block2 = world()->blockAt(pos2);
+
+        if (block1) block1->setPower(mOn, this, 0);
+        if (block2) block2->setPower(mOn, this, above);
+    }
+}

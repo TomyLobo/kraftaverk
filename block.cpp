@@ -11,6 +11,11 @@ Block::Block(vec3 const & position, World *parent) :
     parent->insertBlock(this);
 }
 
+Block::~Block()
+{
+    setTicked(false);
+}
+
 void Block::updateGeometry()
 {
     QGraphicsScene * scene = world()->scene();
@@ -148,4 +153,27 @@ QList<QGraphicsItem *> Block::boxhelper(double x, double y, double z, double xs,
     NS->setBrush(brushNS);
 
     return ret;
+}
+
+void Block::setTicked(bool ticked)
+{
+    world()->setTicked(this, ticked);
+}
+
+void Block::setPower(bool on, Block * poweredFrom, Block * poweredVia)
+{
+    // Wires can't be powered by wires. their charge is propagated elsewhere.
+    if (!validPowerSource(poweredFrom, poweredVia)) return;
+
+    bool prevEmpty = powerSources.isEmpty();
+    if (on) {
+        powerSources += poweredFrom;
+    }
+    else {
+        powerSources -= poweredFrom;
+    }
+
+    if (powerSources.isEmpty() == prevEmpty) return;
+
+    setPower(!powerSources.isEmpty());
 }

@@ -10,11 +10,11 @@ class BlockWire : public Block
     Q_OBJECT
 private:
     int lastCharge;
-    QSet<Block *> powerSources;
 
     QList<Block *> neighboringWires(bool devicesToo = false);
     QList<BlockWire *> unchargeConnectedWires();
-    virtual void setPower(bool on, Block * poweredFrom);
+    virtual void setPower(bool on);
+    virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia);
     void setCharge(int charge);
 
 public:
