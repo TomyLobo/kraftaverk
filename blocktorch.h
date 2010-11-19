@@ -13,6 +13,7 @@ private:
 public:
     explicit BlockTorch(vec3 const & position, World * parent = 0);
     virtual BlockType type();
+    virtual void setPower(bool on, Block * poweredFrom);
 
 signals:
 

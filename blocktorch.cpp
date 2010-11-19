@@ -36,3 +36,6 @@ QList<QGraphicsItem *> BlockTorch::getGeometry()
 
     return ret;
 }
+
+void BlockTorch::setPower(bool on, Block * poweredFrom)
+{

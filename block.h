@@ -30,6 +30,7 @@ public:
     Direction attachment;
     virtual void clicked() {}
     virtual bool allowsAttachment() { return false; }
+    virtual void setPower(bool on, Block * poweredFrom) {}
 
 protected:
     explicit Block(vec3 const & position, World * parent = 0);

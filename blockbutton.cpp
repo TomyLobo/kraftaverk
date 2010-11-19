@@ -2,7 +2,7 @@
 
 BlockButton::BlockButton(vec3 const & position, World *parent) :
     Block(position, parent),
-    on(false)
+    mOn(false)
 {
 }
 
@@ -15,7 +15,7 @@ QList<QGraphicsItem *> BlockButton::getGeometry()
 {
     QList<QGraphicsItem *> ret;
 
-    qreal buttonHeight = on ? 0.1 : 0.25;
+    qreal buttonHeight = on() ? 0.1 : 0.25;
     qreal buttonWidth = 0.5;
 
     vec3 offset = dirToOffset(attachment);
@@ -55,8 +55,38 @@ QList<QGraphicsItem *> BlockButton::getGeometry()
     return ret;
 }
 
+bool BlockButton::on()
+{
+    return mOn;
+}
+
+void BlockButton::setOn(bool on)
+{
+    if (mOn == on) return;
+
+    mOn = on;
+
+    vec3 attachedToPosition = position() + dirToOffset(static_cast<Direction>(attachment));
+
+    Q_ASSERT(world()->blockAt(attachedToPosition) && world()->blockAt(attachedToPosition)->allowsAttachment());
+
+    for (int direction = dirFirstAll; direction != dirLastAll; ++direction) {
+        vec3 offset = dirToOffset(static_cast<Direction>(direction));
+        // TODO: look for wires below and around the button
+        vec3 pos1 = position() + offset;
+        // TODO: look for wires above, below and around the button's attachment block
+        vec3 pos2 = attachedToPosition + offset;
+
+        Block * block1 = world()->blockAt(pos1);
+        Block * block2 = world()->blockAt(pos2);
+
+        if (block1) block1->setPower(mOn, this);
+        if (block2) block2->setPower(mOn, this);
+    }
+}
+
 void BlockButton::clicked()
 {
-    on = !on;
+    setOn(!on());
     updateGeometry();
 }

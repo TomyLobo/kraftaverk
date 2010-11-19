@@ -34,7 +34,7 @@ MainWindow::~MainWindow()
 {}
 
 void MainWindow::initWorld() {
-    mWorld = new World("rs_latch.red", mScene);
+    mWorld = new World("combination_lock.red", mScene);
 }
 
 void MainWindow::sceneMouseDragged(QPointF const & delta)

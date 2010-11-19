@@ -1,9 +1,8 @@
 #include "blockwire.h"
 
-#include <QSet>
-
 BlockWire::BlockWire(vec3 const & position, World *parent) :
-    Block(position, parent)
+    Block(position, parent),
+    lastCharge(0)
 {
 }
 
@@ -25,7 +24,7 @@ QList<QGraphicsItem *> BlockWire::getGeometry()
     switch (wireTargets.size()) {
     case 0:
         // 0 attachments: automatically add 4 implicit attachments
-        for(int i = dirFirst; i <= dirLast; ++i) {
+        for(int i = dirFirstFlat; i <= dirLastFlat; ++i) {
             vec3 offset = dirToOffset(static_cast<Direction>(i));
             wireTargets << position() + offset;
         }
@@ -61,7 +60,7 @@ QList<QGraphicsItem *> BlockWire::getGeometry()
 
     QPen wirePen;
     wirePen.setWidth(3);
-    wirePen.setColor(QColor(64, 32, 0));
+    wirePen.setColor(lastCharge ? QColor(255, 0, 0) : QColor(64, 32, 0));
 
     foreach(QGraphicsItem * line, ret) {
         static_cast<QGraphicsLineItem *>(line)->setPen(wirePen);
@@ -76,7 +75,7 @@ QList<Block *> BlockWire::neighboringWires(bool devicesToo)
     Block * blockAbove = world()->blockAt(position() + vec3(0, 1, 0));
     bool aboveBlocked = blockAbove && blockAbove->allowsAttachment();
 
-    for(int i = dirFirst; i <= dirLast; ++i) {
+    for (int i = dirFirstFlat; i <= dirLastFlat; ++i) {
         vec3 offset = dirToOffset(static_cast<Direction>(i));
         Block * block = world()->blockAt(position() + offset);
         BlockType blockType = btAir;
@@ -122,7 +121,7 @@ QList<BlockWire *> BlockWire::unchargeConnectedWires()
 {
     QList<BlockWire *> sources;
     QSet<BlockWire *> cleared;
-    QList<Block * > toClear = neighboringWires();
+    QList<Block *> toClear = neighboringWires();
 
     while (!toClear.isEmpty()){
         Block * block = toClear.takeLast();
@@ -133,13 +132,58 @@ QList<BlockWire *> BlockWire::unchargeConnectedWires()
 
         if (wire->lastCharge == 15) {
             sources << wire;
-            //continue; // might work too and be faster
+            continue; // might work too and be faster
         }
         else {
             wire->lastCharge = 0;
+            wire->updateGeometry(); // TODO: optimize
             cleared << wire;
         }
         toClear << wire->neighboringWires();
     }
     return sources;
+}
+
+/*TODO:
+  - implement setPower for torches
+  - power all blocks around [implicit] wire target blocks and under them
+*/
+void BlockWire::setPower(bool on, Block * poweredFrom)
+{
+    // Wires can't be powered by wires. their charge is propagated elsewhere.
+    if (poweredFrom->type() == btWire) return;
+
+    if (on) {
+        powerSources << poweredFrom;
+    }
+    else {
+        powerSources.remove(poweredFrom);
+    }
+    if (powerSources.isEmpty()) {
+        setCharge(0);
+        QList<BlockWire *> sources = unchargeConnectedWires();
+        foreach (BlockWire * source, sources) {
+            source->setCharge(15);
+        }
+    }
+    else {
+        setCharge(15);
+    }
+}
+
+void BlockWire::setCharge(int charge)
+{
+    lastCharge = charge;
+    --charge;
+    if (!charge) return;
+
+    foreach (Block * block, neighboringWires()) {
+        Q_ASSERT(dynamic_cast<BlockWire *>(block));
+        BlockWire * wire = static_cast<BlockWire *>(block);
+
+        if (wire->lastCharge < charge) {
+            wire->setCharge(charge);
+        }
+    }
+    updateGeometry();
 }
