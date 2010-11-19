@@ -7,18 +7,29 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QTimer>
 
 World::World(QGraphicsScene * parent) :
     QObject(parent)
 {
-    connect(&projector, SIGNAL(changed()), SLOT(projectionChanged())); // TODO: move to helper function
+    init();
 }
 
 World::World(QString const & fileName, QGraphicsScene * parent) :
     QObject(parent)
 {
-    connect(&projector, SIGNAL(changed()), SLOT(projectionChanged())); // TODO: move to helper function
+    init();
     loadWorld(fileName);
+}
+
+void World::init()
+{
+    connect(&projector, SIGNAL(changed()), SLOT(projectionChanged())); // TODO: move to helper function
+
+    QTimer * foo = new QTimer(this);
+    connect(foo, SIGNAL(timeout()), SLOT(tick()));
+    foo->setInterval(100);
+    foo->start();
 }
 
 void World::loadWorld(QString const & fileName)

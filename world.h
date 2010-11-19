@@ -19,6 +19,7 @@ class World : public QObject
 private:
     QMap<vec3, Block *> blocks;
 
+    void init();
     void loadWorld(QString const & fileName);
     QSet<Block*> tickedBlocks;
 
@@ -36,7 +37,6 @@ public:
 
     Block * blockAt(vec3 const & position);
     void setTicked(Block *, bool ticked);
-    void tick();
 
 signals:
 
@@ -45,6 +45,7 @@ private slots:
 public slots:
     void redraw();
     void updateGeometry();
+    void tick();
 };
 
 #endif // WORLD_H

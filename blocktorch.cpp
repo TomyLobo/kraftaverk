@@ -2,9 +2,11 @@
 
 BlockTorch::BlockTorch(vec3 const & position, World *parent) :
     Block(position, parent),
-    mOn(true),
+    mOn(false),
     nextOn(true)
-{}
+{
+    setTicked(true);
+}
 
 Block::BlockType BlockTorch::type()
 {
@@ -48,7 +50,7 @@ void BlockTorch::setPower(bool on)
 
     nextOn = !on;
 
-    tick(); // TEMP!
+    //tick(); // TEMP!
 }
 
 void BlockTorch::tick()
@@ -62,8 +64,6 @@ void BlockTorch::tick()
     vec3 abovePosition = position() + vec3(0, 1, 0);
 
     Block * above = world()->blockAt(abovePosition);
-
-    Q_ASSERT(above && above->allowsAttachment());
 
     for (int direction = dirFirstAll; direction != dirLastAll; ++direction) {
         vec3 offset = dirToOffset(static_cast<Direction>(direction));
