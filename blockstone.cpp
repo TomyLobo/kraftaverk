@@ -10,10 +10,7 @@ Block::BlockType BlockStone::type()
     return btStone;
 }
 
-QList<QGraphicsItem *> BlockStone::getGeometry()
+void BlockStone::drawGeometry()
 {
-    QList<QGraphicsItem *> ret;
-    ret << boxhelper(position().x, position().y, position().z, 1.0, 1.0, 1.0, QBrush(QColor(192, 192, 192)));
-
-    return ret;
+    boxhelper(position(), vec3(1.0, 1.0, 1.0), QBrush(QColor(192, 192, 192)));
 }

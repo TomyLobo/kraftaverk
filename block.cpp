@@ -6,7 +6,8 @@
 
 Block::Block(vec3 const & position, World *parent) :
     QObject(parent),
-    mPosition(position)
+    mPosition(position),
+    mDirty(true)
 {
     parent->insertBlock(this);
 }
@@ -18,141 +19,126 @@ Block::~Block()
 
 void Block::updateGeometry()
 {
-    QGraphicsScene * scene = world()->scene();
-    foreach(QGraphicsItem * part, parts) {
-        scene->removeItem(part);
-    }
-
-    QList<QGraphicsItem *> newParts = getGeometry();
-    parts = newParts;
-
-    foreach(QGraphicsItem * part, parts) {
-        scene->addItem(part);
-    }
+    dlist.begin();
+    drawGeometry();
+    dlist.end();
+    mDirty = false;
 }
 
-void Block::redraw()
+void Block::draw()
 {
-    updateGeometry(); // TEMP!
-    //QGraphicsScene * scene = world()->scene();
+    if (mDirty) updateGeometry();
+
+    dlist.call();
 }
 
-QAbstractGraphicsShapeItem * Block::dQuad(vec3 const & p1, vec3 const & p2, vec3 const & p3, vec3 const & p4, double zOrderOverride)
+void Block::boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush)
 {
-    // projection
-    vec3 p1p = getCoords(p1, zOrderOverride);
-    vec3 p2p = getCoords(p2, zOrderOverride);
-    vec3 p3p = getCoords(p3, zOrderOverride);
-    vec3 p4p = getCoords(p4, zOrderOverride);
-
-    // generate polygon structure
-    QPolygonF polygon;
-
-    polygon
-        << QPointF(p1p.x, p1p.y)
-        << QPointF(p2p.x, p2p.y)
-        << QPointF(p3p.x, p3p.y)
-        << QPointF(p4p.x, p4p.y);
-
-    // generate polygon shape from it
-    QAbstractGraphicsShapeItem * ret = new QGraphicsPolygonItem(polygon);
-
-    // set z value for z ordering
-    ret->setZValue((p1p.z + p2p.z + p3p.z + p4p.z) / 4);
-
-    // reduce line size so it doesn't look crap with AA
-    ret->setPen(QPen(QBrush(QColor(0,0,0)),0.5));
-
-    return ret;
+    boxhelper(position.x, position.y, position.z, size.x, size.y, size.z, brush);
 }
-
-QAbstractGraphicsShapeItem * Block::dCircle(vec3 const & center, qreal radius, double zOrderOverride)
+void Block::boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush)
 {
-    vec3 centerp = getCoords(center, zOrderOverride);
+    QBrush brushTop = brush;
 
-    QAbstractGraphicsShapeItem * ret = new QGraphicsEllipseItem(centerp.x-radius, centerp.y-radius, radius*2, radius*2);
-    ret->setZValue(centerp.z);
-    return ret;
-}
+    QBrush brushEW = brush;
+    brushEW.setColor( brush.color().darker(120));
 
-QGraphicsLineItem * Block::dLine(vec3 const & p1, vec3 const & p2, double zOrderOverride)
-{
-    vec3 p1p = getCoords(p1, zOrderOverride);
-    vec3 p2p = getCoords(p2, zOrderOverride);
+    QBrush brushNS = brush;
+    brushNS.setColor( brush.color().darker(150));
 
-    QGraphicsLineItem * ret = new QGraphicsLineItem(p1p.x, p1p.y, p2p.x, p2p.y);
-    ret->setZValue((p1p.z + p2p.z) / 2);
-    return ret;
-}
+    glBegin(GL_QUADS);
+    glhApplyBrush(brushTop);
+    // top side
+    glVertex3d(x     , y + ys, z     );
+    glVertex3d(x + xs, y + ys, z     );
+    glVertex3d(x + xs, y + ys, z + zs);
+    glVertex3d(x     , y + ys, z + zs);
 
-QList<QGraphicsItem *> Block::boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & pen, double zOrderOverride)
-{
-    QBrush brushTop = pen;
+    // bottom side
+    glVertex3d(x     , y     , z     );
+    glVertex3d(x + xs, y     , z     );
+    glVertex3d(x + xs, y     , z + zs);
+    glVertex3d(x     , y     , z + zs);
 
-    QBrush brushEW = pen;
-    brushEW.setColor( pen.color().darker(120));
+    glhApplyBrush(brushEW);
+    // east side
+    glVertex3d(x     , y     , z     );
+    glVertex3d(x + xs, y     , z     );
+    glVertex3d(x + xs, y + ys, z     );
+    glVertex3d(x     , y + ys, z     );
 
-    QBrush brushNS = pen;
-    brushNS.setColor( pen.color().darker(150));
+    // west side
+    glVertex3d(x     , y     , z + zs);
+    glVertex3d(x + xs, y     , z + zs);
+    glVertex3d(x + xs, y + ys, z + zs);
+    glVertex3d(x     , y + ys, z + zs);
 
-    QList<QGraphicsItem *> ret;
-    QAbstractGraphicsShapeItem * top, * EW, * NS;
+    glhApplyBrush(brushNS);
+    // north side
+    glVertex3d(x     , y     , z     );
+    glVertex3d(x     , y     , z + zs);
+    glVertex3d(x     , y + ys, z + zs);
+    glVertex3d(x     , y + ys, z     );
 
-    ret << (top = dQuad(
-        vec3(x     , y + ys, z     ),
-        vec3(x + xs, y + ys, z     ),
-        vec3(x + xs, y + ys, z + zs),
-        vec3(x     , y + ys, z + zs),
-        zOrderOverride
-    ));
+    // south side
+    glVertex3d(x + xs, y     , z     );
+    glVertex3d(x + xs, y     , z + zs);
+    glVertex3d(x + xs, y + ys, z + zs);
+    glVertex3d(x + xs, y + ys, z     );
 
-    if (world()->sideVisible(dirEast)) {
-        // east side
-        ret << (EW = dQuad(
-            vec3(x     , y     , z     ),
-            vec3(x + xs, y     , z     ),
-            vec3(x + xs, y + ys, z     ),
-            vec3(x     , y + ys, z     ),
-            zOrderOverride
-        ));
-    }
-    else {
-        // west side
-        ret << (EW = dQuad(
-            vec3(x     , y     , z + zs),
-            vec3(x + xs, y     , z + zs),
-            vec3(x + xs, y + ys, z + zs),
-            vec3(x     , y + ys, z + zs),
-            zOrderOverride
-        ));
-    }
+    glEnd();
 
-    if (world()->sideVisible(dirNorth)) {
-        // north side
-        ret << (NS = dQuad(
-            vec3(x     , y     , z     ),
-            vec3(x     , y     , z + zs),
-            vec3(x     , y + ys, z + zs),
-            vec3(x     , y + ys, z     ),
-            zOrderOverride
-        ));
-    }
-    else {
-        // south side
-        ret << (NS = dQuad(
-            vec3(x + xs, y     , z     ),
-            vec3(x + xs, y     , z + zs),
-            vec3(x + xs, y + ys, z + zs),
-            vec3(x + xs, y + ys, z     ),
-            zOrderOverride
-        ));
-    }
+    QPen outlinePen;
+    outlinePen.setWidthF(1);
 
-    top->setBrush(brushTop);
-    EW->setBrush(brushEW);
-    NS->setBrush(brushNS);
+    glhApplyPen(outlinePen);
+    glBegin(GL_LINE_LOOP);
+    // top side
+    glVertex3d(x     , y + ys, z     );
+    glVertex3d(x + xs, y + ys, z     );
+    glVertex3d(x + xs, y + ys, z + zs);
+    glVertex3d(x     , y + ys, z + zs);
+    glEnd();
 
-    return ret;
+    glBegin(GL_LINE_LOOP);
+    // bottom side
+    glVertex3d(x     , y     , z     );
+    glVertex3d(x + xs, y     , z     );
+    glVertex3d(x + xs, y     , z + zs);
+    glVertex3d(x     , y     , z + zs);
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);
+    // east side
+    glVertex3d(x     , y     , z     );
+    glVertex3d(x + xs, y     , z     );
+    glVertex3d(x + xs, y + ys, z     );
+    glVertex3d(x     , y + ys, z     );
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);
+    // west side
+    glVertex3d(x     , y     , z + zs);
+    glVertex3d(x + xs, y     , z + zs);
+    glVertex3d(x + xs, y + ys, z + zs);
+    glVertex3d(x     , y + ys, z + zs);
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);
+    // north side
+    glVertex3d(x     , y     , z     );
+    glVertex3d(x     , y     , z + zs);
+    glVertex3d(x     , y + ys, z + zs);
+    glVertex3d(x     , y + ys, z     );
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);
+    // south side
+    glVertex3d(x + xs, y     , z     );
+    glVertex3d(x + xs, y     , z + zs);
+    glVertex3d(x + xs, y + ys, z + zs);
+    glVertex3d(x + xs, y + ys, z     );
+    glEnd();
 }
 
 void Block::setTicked(bool ticked)
@@ -162,7 +148,6 @@ void Block::setTicked(bool ticked)
 
 void Block::setPower(bool on, Block * poweredFrom, Block * poweredVia)
 {
-    // Wires can't be powered by wires. their charge is propagated elsewhere.
     if (!validPowerSource(poweredFrom, poweredVia)) return;
 
     bool prevEmpty = powerSources.isEmpty();
@@ -176,4 +161,17 @@ void Block::setPower(bool on, Block * poweredFrom, Block * poweredVia)
     if (powerSources.isEmpty() == prevEmpty) return;
 
     setPower(!powerSources.isEmpty());
+}
+
+void Block::powerAllAround(vec3 const & centerPosition, bool on, Block * poweredFrom, Block * poweredVia)
+{
+    for (int direction = dirFirstAll; direction <= dirLastAll; ++direction) {
+        vec3 offset = dirToOffset(static_cast<Direction>(direction));
+
+        vec3 pos = centerPosition + offset;
+
+        Block * block = world()->blockAt(pos);
+
+        if (block) block->setPower(on, poweredFrom, poweredVia);
+    }
 }

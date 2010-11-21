@@ -2,17 +2,15 @@
 #define MAINWINDOW_H
 
 #include "world.h"
-#include "graphicsscene.h"
+#include "glwidget.h"
 
 #include <QMainWindow>
-#include <QGraphicsView>
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
-    QGraphicsView * mView;
-    GraphicsScene * mScene;
+    GLWidget * glWidget;
     World * mWorld;
     qreal mYaw;
 

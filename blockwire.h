@@ -24,7 +24,7 @@ public:
 signals:
 
 public slots:
-    virtual QList<QGraphicsItem *> getGeometry();
+    virtual void drawGeometry();
 };
 
 #endif // BLOCKWIRE_H

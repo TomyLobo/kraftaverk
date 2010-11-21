@@ -1,6 +1,10 @@
 #ifndef HELPER_H
 #define HELPER_H
 
+#include <QBrush>
+#include "position.h"
+#include <QtOpenGL/QtOpenGL>
+
 enum Direction {
     dirNone = 0,
     dirDown = 1,
@@ -47,6 +51,23 @@ static inline vec3 dirToOffset(Direction direction)
             Q_ASSERT(false);
     }
     return vec3();
+}
+
+static inline void glhApplyBrush(QBrush const & brush)
+{
+    QColor color = brush.color();
+    glColor4d(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+}
+
+static inline void glhApplyPen(QPen const & pen)
+{
+    glhApplyBrush(pen.brush());
+    glLineWidth(pen.widthF());
+}
+
+static inline void glhVertex(vec3 const & v)
+{
+    glVertex3d(v.x, v.y, v.z);
 }
 
 #endif // HELPER_H

@@ -4,6 +4,10 @@
 #include "blocktorch.h"
 #include "blockbutton.h"
 #include "blockwire.h"
+#include "blockdoor.h"
+
+#include "mathlib/vector4.h"
+#include "mathlib/matrix4.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -15,7 +19,7 @@ World::World(QGraphicsScene * parent) :
     init();
 }
 
-World::World(QString const & fileName, QGraphicsScene * parent) :
+World::World(QString const & fileName, QObject * parent) :
     QObject(parent)
 {
     init();
@@ -24,8 +28,7 @@ World::World(QString const & fileName, QGraphicsScene * parent) :
 
 void World::init()
 {
-    connect(&projector, SIGNAL(changed()), SLOT(projectionChanged())); // TODO: move to helper function
-
+    mDirty = true;
     QTimer * foo = new QTimer(this);
     connect(foo, SIGNAL(timeout()), SLOT(tick()));
     foo->setInterval(100);
@@ -77,6 +80,10 @@ void World::loadWorld(QString const & fileName)
                     case 'r':
                         lastBlock = new BlockWire(position, this);
                         break;
+
+                    case 'd':
+                        lastBlock = new BlockDoor(position, this);
+                        break;
                 }
 
                 if (!lastBlock) continue;
@@ -109,7 +116,6 @@ void World::loadWorld(QString const & fileName)
             }
         }
     }
-    updateGeometry();
 }
 
 void World::insertBlock(Block * block)
@@ -117,32 +123,29 @@ void World::insertBlock(Block * block)
     blocks[block->position()] = block;
 }
 
-vec3 World::getCoords(vec3 const & position, double zOrderOverride) {
-    vec3 ret = projector.project(position);
-    if (!qIsInf(zOrderOverride)) ret.z = zOrderOverride;
-    return ret;
-}
-
-void World::projectionChanged() {
-    redraw();
-}
-
-void World::redraw() {
-    foreach(Block * block, blocks) {
-        block->redraw();
-    }
-}
-
-void World::updateGeometry() {
-    foreach(Block * block, blocks) {
-        block->updateGeometry();
-    }
-}
-
-bool World::sideVisible(Direction direction)
+void World::draw()
 {
-    vec3 normal = dirToOffset(direction);
-    return projector.faceVisible(normal);
+    GLdouble projection[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+
+    GLdouble modelView[16];
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
+
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    QMultiMap<qreal, Block *> blockMap;
+    foreach(Block * block, blocks) {
+        vec3 pos = block->position();
+        qreal x, y, z;
+        gluProject(pos.x, pos.y, pos.z, modelView, projection, viewport, &x, &y, &z);
+        blockMap.insert(-z, block);
+    }
+
+    foreach(Block * block, blockMap) {
+        block->draw();
+    }
+    mDirty = false;
 }
 
 Block * World::blockAt(vec3 const & position)
@@ -167,4 +170,12 @@ void World::tick()
     foreach (Block * block, tickedBlocks) {
         block->tick();
     }
+}
+
+void World::setDirty()
+{
+    if (mDirty) return;
+
+    mDirty = true;
+    QTimer::singleShot(0, this, SIGNAL(redrawNeeded()));
 }

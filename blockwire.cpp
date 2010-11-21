@@ -11,10 +11,8 @@ Block::BlockType BlockWire::type()
     return btWire;
 }
 
-QList<QGraphicsItem *> BlockWire::getGeometry()
+void BlockWire::drawGeometry()
 {
-    QList<QGraphicsItem *> ret;
-    qreal centerz = getCoords(position() + vec3(0.5, 0.5, 0.5)).z;
     //ret << boxhelper(position().x, position().y, position().z, 1.0, .1, 1.0, QBrush(QColor(192, 0, 0)));
     QList<vec3> wireTargets;
     foreach (Block * wireTarget, neighboringWires(true)) {
@@ -34,39 +32,27 @@ QList<QGraphicsItem *> BlockWire::getGeometry()
         // 1 attachment: automatically add an implicit attachment to the opposite direction
         wireTargets << position()*vec3(2, 1, 2) + wireTargets.first() * vec3(-1, 0, -1);
     }
-
-    foreach (vec3 wireTarget, wireTargets) {
-        if (wireTarget.y > position().y) {
-            // 2-step if y2 > y1
-            ret << dLine(
-                position() + vec3(0.5, 0.1, 0.5),
-                position() * vec3(0.55, 1, 0.55) + vec3(0.5, 0.1, 0.5) + wireTarget * vec3(0.45, 0, 0.45),
-                centerz
-            );
-            ret << dLine(
-                position() * vec3(0.55, 1, 0.55) + vec3(0.5, 0.1, 0.5) + wireTarget * vec3(0.45, 0, 0.45),
-                position() * vec3(0.55, 0, 0.55) + vec3(0.5, 0.1, 0.5) + wireTarget * vec3(0.45, 1, 0.45),
-                centerz
-            );
-        }
-        else {
-            ret << dLine(
-                position() + vec3(0.5, 0.1, 0.5),
-                position() * vec3(0.5, 1, 0.5) + vec3(0.5, 0.1, 0.5) + wireTarget * vec3(0.5, 0, 0.5),
-                centerz
-            );
-        }
-    }
-
     QPen wirePen;
     wirePen.setWidth(3);
     wirePen.setColor(lastCharge ? QColor(255, 0, 0) : QColor(64, 32, 0));
 
-    foreach(QGraphicsItem * line, ret) {
-        static_cast<QGraphicsLineItem *>(line)->setPen(wirePen);
-    }
+    glhApplyPen(wirePen);
 
-    return ret;
+    glBegin(GL_LINES);
+    foreach (vec3 wireTarget, wireTargets) {
+        if (wireTarget.y > position().y) {
+            // 2-step if y2 > y1
+            glhVertex(position() + vec3(0.5, 0.1, 0.5));
+            glhVertex(position() * vec3(0.55, 1, 0.55) + vec3(0.5, 0.1, 0.5) + wireTarget * vec3(0.45, 0, 0.45));
+            glhVertex(position() * vec3(0.55, 1, 0.55) + vec3(0.5, 0.1, 0.5) + wireTarget * vec3(0.45, 0, 0.45));
+            glhVertex(position() * vec3(0.55, 0, 0.55) + vec3(0.5, 0.1, 0.5) + wireTarget * vec3(0.45, 1, 0.45));
+        }
+        else {
+            glhVertex(position() + vec3(0.5, 0.1, 0.5));
+            glhVertex(position() * vec3(0.5, 1, 0.5) + vec3(0.5, 0.1, 0.5) + wireTarget * vec3(0.5, 0, 0.5));
+        }
+    }
+    glEnd();
 }
 
 QList<Block *> BlockWire::neighboringWires(bool devicesToo)
@@ -136,7 +122,7 @@ QList<BlockWire *> BlockWire::unchargeConnectedWires()
         }
         else {
             wire->setCharge(0);
-            wire->updateGeometry(); // TODO: optimize
+            wire->setDirty();
             cleared << wire;
         }
         toClear << wire->neighboringWires();
@@ -144,10 +130,6 @@ QList<BlockWire *> BlockWire::unchargeConnectedWires()
     return sources;
 }
 
-/*TODO:
-  - implement setPower for torches, with power source evaluation for validity
-  - power all blocks around [implicit] wire target blocks and under them
-*/
 bool BlockWire::validPowerSource(Block * poweredFrom, Block * poweredVia)
 {
     // Wires can't be powered by wires. their charge is propagated elsewhere.
@@ -173,7 +155,9 @@ void BlockWire::setCharge(int charge)
     lastCharge = charge;
     if (charge > 0) --charge;
 
-    foreach (Block * block, neighboringWires()) {
+    QList<Block *> wireTargets = neighboringWires();
+
+    foreach (Block * block, wireTargets) {
         Q_ASSERT(dynamic_cast<BlockWire *>(block));
         BlockWire * wire = static_cast<BlockWire *>(block);
 
@@ -181,5 +165,31 @@ void BlockWire::setCharge(int charge)
             wire->setCharge(charge);
         }
     }
-    updateGeometry();
+
+    QList<Block*> implicitWireTargets;
+
+    switch (wireTargets.size()){
+    case 0:
+        // 0 attachments: automatically add 4 implicit attachments
+        for(int i = dirFirstFlat; i <= dirLastFlat; ++i) {
+            vec3 offset = dirToOffset(static_cast<Direction>(i));
+            Block * block = world()->blockAt(position() + offset);
+            if (block) implicitWireTargets << block;
+        }
+        break;
+
+    case 1: {
+            // 1 attachment: automatically add an implicit attachment to the opposite direction
+            Block * block = world()->blockAt(position()*vec3(2, 1, 2) + wireTargets.first()->position() * vec3(-1, 0, -1));
+            if (block) implicitWireTargets << block;
+        }
+    }
+    implicitWireTargets << world()->blockAt(position() + vec3(0, -1, 0));
+
+    foreach (Block * block, implicitWireTargets) {
+        block->setPower(lastCharge, this, 0);
+        powerAllAround(block->position(), lastCharge, this, block);
+    }
+
+    setDirty();
 }

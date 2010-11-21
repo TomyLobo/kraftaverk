@@ -14,7 +14,7 @@ public:
 signals:
 
 public slots:
-    virtual QList<QGraphicsItem *> getGeometry();
+    virtual void drawGeometry();
 };
 
 #endif // BLOCKSTONE_H

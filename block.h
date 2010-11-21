@@ -4,6 +4,7 @@
 #include "position.h"
 #include "world.h"
 #include "helper.h"
+#include "displaylist.h"
 
 #include <QObject>
 #include <QList>
@@ -31,6 +32,7 @@ public:
     Direction attachment;
     virtual void clicked() {}
     virtual bool allowsAttachment() { return false; }
+    void powerAllAround(vec3 const & centerPosition, bool on, Block * poweredFrom, Block * poweredVia);
     void setPower(bool on, Block * poweredFrom, Block * poweredVia);
     virtual void setPower(bool on) {}
     virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia) { return false; }
@@ -44,29 +46,27 @@ protected:
         return static_cast<World*>(parent());
     }
 
-    vec3 getCoords(vec3 const & position, double zOrderOverride = qInf())
-    {
-        return world()->getCoords(position, zOrderOverride);
-    }
-    QAbstractGraphicsShapeItem * dQuad(vec3 const & p1, vec3 const & p2, vec3 const & p3, vec3 const & p4, double zOrderOverride = qInf());
-    QGraphicsLineItem * dLine(vec3 const & p1, vec3 const & p2, double zOrderOverride = qInf());
-    QAbstractGraphicsShapeItem * dCircle(vec3 const & center, qreal radius, double zOrderOverride = qInf());
-    QList<QGraphicsItem *> boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & pen, double zOrderOverride = qInf());
+    void boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush);
+    void boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush);
 
-    virtual QList<QGraphicsItem *> getGeometry() = 0;
+    virtual void drawGeometry() = 0;
 
     void setTicked(bool ticked);
+    void setDirty()
+    {
+        mDirty = true;
+        world()->setDirty();
+    }
+    void updateGeometry();
 
 private:
-    QList<QGraphicsItem*> parts;
+    DisplayList dlist;
     vec3 mPosition;
     QSet<Block *> powerSources;
-
-signals:
+    bool mDirty;
 
 public slots:
-    void redraw();
-    void updateGeometry();
+    void draw();
 };
 
 #endif // BLOCK_H

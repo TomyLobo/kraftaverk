@@ -1,22 +1,18 @@
-#ifndef BLOCKTORCH_H
-#define BLOCKTORCH_H
+#ifndef BLOCKDOOR_H
+#define BLOCKDOOR_H
 
 #include "block.h"
-#include "helper.h"
 
-class BlockTorch : public Block
+class BlockDoor : public Block
 {
     Q_OBJECT
 private:
-    bool mOn;
-    bool nextOn;
-
+    bool on;
 public:
-    explicit BlockTorch(vec3 const & position, World * parent = 0);
+    explicit BlockDoor(vec3 const & position, World * parent = 0);
     virtual BlockType type();
     virtual void setPower(bool on);
     virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia);
-    virtual void tick();
 
 signals:
 
@@ -24,4 +20,4 @@ public slots:
     virtual void drawGeometry();
 };
 
-#endif // BLOCKTORCH_H
+#endif // BLOCKDOOR_H

@@ -22,7 +22,7 @@ private slots:
     //void clicked();
 
 public slots:
-    virtual QList<QGraphicsItem *> getGeometry();
+    virtual void drawGeometry();
 };
 
 #endif // BLOCKBUTTON_H
