@@ -1,10 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "world.h"
-#include "glwidget.h"
-
 #include <QMainWindow>
+
+class GLWidget;
+class World;
 
 class MainWindow : public QMainWindow
 {
@@ -12,16 +12,15 @@ class MainWindow : public QMainWindow
 private:
     GLWidget * glWidget;
     World * mWorld;
-    qreal mYaw;
 
-    void initWorld();
+    void initMenus();
 
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private slots:
-    void sceneMouseDragged(QPointF const & delta);
+    void initWorld(const QString &file);
 };
 
 #endif // MAINWINDOW_H

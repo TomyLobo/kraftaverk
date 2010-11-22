@@ -27,6 +27,8 @@ private:
 public:
     explicit World(QGraphicsScene * parent = 0);
     World(QString const & fileName, QObject * parent = 0);
+    ~World();
+
     void insertBlock(Block * block);
 
     Block * blockAt(vec3 const & position);

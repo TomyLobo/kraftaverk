@@ -1,4 +1,5 @@
 #include "blocktorch.h"
+#include "world.h"
 
 #include "helper.h"
 

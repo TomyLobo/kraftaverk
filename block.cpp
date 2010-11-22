@@ -1,5 +1,4 @@
 #include "block.h"
-
 #include "world.h"
 
 #include <QTimer>
@@ -15,6 +14,11 @@ Block::Block(vec3 const & position, World *parent) :
 Block::~Block()
 {
     setTicked(false);
+}
+
+World * Block::world()
+{
+    return static_cast<World*>(parent());
 }
 
 void Block::updateGeometry()
@@ -50,9 +54,9 @@ void Block::boxhelper(double x, double y, double z, double xs, double ys, double
     glhApplyBrush(brushTop);
     // top side
     glVertex3d(x     , y + ys, z     );
-    glVertex3d(x + xs, y + ys, z     );
-    glVertex3d(x + xs, y + ys, z + zs);
     glVertex3d(x     , y + ys, z + zs);
+    glVertex3d(x + xs, y + ys, z + zs);
+    glVertex3d(x + xs, y + ys, z     );
 
     // bottom side
     glVertex3d(x     , y     , z     );
@@ -63,9 +67,9 @@ void Block::boxhelper(double x, double y, double z, double xs, double ys, double
     glhApplyBrush(brushEW);
     // east side
     glVertex3d(x     , y     , z     );
-    glVertex3d(x + xs, y     , z     );
-    glVertex3d(x + xs, y + ys, z     );
     glVertex3d(x     , y + ys, z     );
+    glVertex3d(x + xs, y + ys, z     );
+    glVertex3d(x + xs, y     , z     );
 
     // west side
     glVertex3d(x     , y     , z + zs);
@@ -82,9 +86,9 @@ void Block::boxhelper(double x, double y, double z, double xs, double ys, double
 
     // south side
     glVertex3d(x + xs, y     , z     );
-    glVertex3d(x + xs, y     , z + zs);
-    glVertex3d(x + xs, y + ys, z + zs);
     glVertex3d(x + xs, y + ys, z     );
+    glVertex3d(x + xs, y + ys, z + zs);
+    glVertex3d(x + xs, y     , z + zs);
 
     glEnd();
 
@@ -174,4 +178,10 @@ void Block::powerAllAround(vec3 const & centerPosition, bool on, Block * powered
 
         if (block) block->setPower(on, poweredFrom, poweredVia);
     }
+}
+
+void Block::setDirty()
+{
+    mDirty = true;
+    world()->setDirty();
 }

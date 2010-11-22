@@ -1,10 +1,13 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include "world.h"
 #include "mathlib/matrix4.h"
+#include "position.h"
+#include "mathlib/angle.h"
 
 #include <QGLWidget>
+
+class World;
 
 class GLWidget : public QGLWidget
 {
@@ -12,11 +15,15 @@ class GLWidget : public QGLWidget
 private:
     World * world;
     QPointF lastPos;
+    angle<qreal> mAngle;
+    vec3 normalstart, normalvec;
+
+    void mouseDragged(QPointF const & delta);
 
 public:
     explicit GLWidget(QWidget *parent = 0);
     void setWorld(World * world);
-    void setYaw(qreal yaw);
+    void setAngle(angle<qreal> angle);
 
 protected:
     virtual void mousePressEvent(QMouseEvent * mouseEvent);
@@ -27,11 +34,8 @@ protected:
     virtual void resizeGL(int w, int h);
     virtual void paintGL();
 
-signals:
-    void mouseDragged(QPointF const & delta);
-
 private slots:
-    void resetWorld() { this->world = 0; }
+    void resetWorld() { setWorld(0); }
 };
 
 #endif // GLWIDGET_H

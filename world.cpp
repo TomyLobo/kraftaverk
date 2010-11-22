@@ -25,6 +25,14 @@ World::World(QString const & fileName, QObject * parent) :
     init();
     loadWorld(fileName);
 }
+World::~World()
+{
+    // Make sure blocks are destroyed before there is no world anymore.
+    QObjectList children(this->children());
+    foreach(QObject * child, children) {
+        delete child;
+    }
+}
 
 void World::init()
 {

@@ -1,4 +1,5 @@
 #include "blockwire.h"
+#include "world.h"
 
 BlockWire::BlockWire(vec3 const & position, World *parent) :
     Block(position, parent),

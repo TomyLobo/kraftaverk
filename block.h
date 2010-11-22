@@ -2,7 +2,6 @@
 #define BLOCK_H
 
 #include "position.h"
-#include "world.h"
 #include "helper.h"
 #include "displaylist.h"
 
@@ -10,6 +9,8 @@
 #include <QList>
 #include <QGraphicsItem>
 #include <qnumeric.h>
+
+class World;
 
 class Block : public QObject
 {
@@ -41,10 +42,7 @@ public:
 protected:
     explicit Block(vec3 const & position, World * parent = 0);
 
-    World * world()
-    {
-        return static_cast<World*>(parent());
-    }
+    World * world();
 
     void boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush);
     void boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush);
@@ -52,11 +50,7 @@ protected:
     virtual void drawGeometry() = 0;
 
     void setTicked(bool ticked);
-    void setDirty()
-    {
-        mDirty = true;
-        world()->setDirty();
-    }
+    void setDirty();
     void updateGeometry();
 
 private:

@@ -1,0 +1,2 @@
+- walk mode
+- load command line

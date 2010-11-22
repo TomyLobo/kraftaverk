@@ -1,4 +1,5 @@
 #include "blockbutton.h"
+#include "world.h"
 
 BlockButton::BlockButton(vec3 const & position, World *parent) :
     Block(position, parent),
