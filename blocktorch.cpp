@@ -74,3 +74,9 @@ void BlockTorch::tick()
     if (above)
         powerAllAround(abovePosition, mOn, this, above);
 }
+
+BoundingBox BlockTorch::boundingBox()
+{
+    // TODO: change!
+    return qMakePair(position(), vec3(1.0, 1.0, 1.0));
+}

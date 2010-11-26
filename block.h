@@ -12,6 +12,8 @@
 
 class World;
 
+typedef QPair<vec3, vec3> BoundingBox;
+
 class Block : public QObject
 {
     Q_OBJECT
@@ -38,12 +40,14 @@ public:
     virtual void setPower(bool on) {}
     virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia) { return false; }
     virtual void tick() {}
+    virtual BoundingBox boundingBox() = 0;
 
 protected:
     explicit Block(vec3 const & position, World * parent = 0);
 
     World * world();
 
+    void boxhelper(BoundingBox const & box, QBrush const & brush);
     void boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush);
     void boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush);
 
@@ -52,6 +56,7 @@ protected:
     void setTicked(bool ticked);
     void setDirty();
     void updateGeometry();
+
 
 private:
     DisplayList dlist;

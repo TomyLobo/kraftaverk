@@ -11,7 +11,7 @@ Block::BlockType BlockDoor::type()
     return btDoor;
 }
 
-void BlockDoor::drawGeometry()
+BoundingBox BlockDoor::boundingBox()
 {
     vec3 offset;
     if (on) {
@@ -29,15 +29,22 @@ void BlockDoor::drawGeometry()
     double yo = offset.y;
     double zo = offset.z;
 
-    boxhelper(
-        x + (xo ? 0.8 * (xo * 0.5 + 0.5) : 0),
-        y + (yo ? 0.8 * (yo * 0.5 + 0.5) : 0),
-        z + (zo ? 0.8 * (zo * 0.5 + 0.5) : 0),
-        xo ? 0.2 : 1,
-        yo ? 0.2 : 1,
-        zo ? 0.2 : 1,
-        QBrush(QColor(255, 204, 0))
+    return qMakePair(
+        vec3(
+            x + (xo ? 0.8 * (xo * 0.5 + 0.5) : 0),
+            y + (yo ? 0.8 * (yo * 0.5 + 0.5) : 0),
+            z + (zo ? 0.8 * (zo * 0.5 + 0.5) : 0)
+        ),
+        vec3(
+            xo ? 0.2 : 1,
+            yo ? 0.2 : 1,
+            zo ? 0.2 : 1
+        )
     );
+}
+void BlockDoor::drawGeometry()
+{
+    boxhelper(boundingBox(), QBrush(QColor(255, 204, 0)));
 }
 
 bool BlockDoor::validPowerSource(Block * poweredFrom, Block * poweredVia)

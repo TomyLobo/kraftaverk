@@ -17,6 +17,7 @@ public:
     virtual void setPower(bool on);
     virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia);
     virtual void tick();
+    virtual BoundingBox boundingBox();
 
 signals:
 

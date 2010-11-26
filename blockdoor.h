@@ -13,6 +13,7 @@ public:
     virtual BlockType type();
     virtual void setPower(bool on);
     virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia);
+    virtual BoundingBox boundingBox();
 
 signals:
 

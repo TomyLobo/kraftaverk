@@ -12,5 +12,10 @@ Block::BlockType BlockStone::type()
 
 void BlockStone::drawGeometry()
 {
-    boxhelper(position(), vec3(1.0, 1.0, 1.0), QBrush(QColor(192, 192, 192)));
+    boxhelper(boundingBox(), QBrush(QColor(192, 192, 192)));
+}
+
+BoundingBox BlockStone::boundingBox()
+{
+    return qMakePair(position(), vec3(1.0, 1.0, 1.0));
 }

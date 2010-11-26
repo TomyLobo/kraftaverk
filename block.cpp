@@ -36,10 +36,16 @@ void Block::draw()
     dlist.call();
 }
 
+void Block::boxhelper(BoundingBox const & box, QBrush const & brush)
+{
+    boxhelper(box.first, box.second, brush);
+}
+
 void Block::boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush)
 {
     boxhelper(position.x, position.y, position.z, size.x, size.y, size.z, brush);
 }
+
 void Block::boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush)
 {
     QBrush brushTop = brush;

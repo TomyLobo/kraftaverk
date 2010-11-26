@@ -15,6 +15,7 @@ public:
     void clicked();
     bool on();
     void setOn(bool on);
+    virtual BoundingBox boundingBox();
 
 signals:
 

@@ -194,3 +194,8 @@ void BlockWire::setCharge(int charge)
 
     setDirty();
 }
+
+BoundingBox BlockWire::boundingBox()
+{
+    return qMakePair(position(), vec3(1.0, 0.1, 1.0));
+}

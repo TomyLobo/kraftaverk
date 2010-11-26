@@ -12,20 +12,31 @@ Block::BlockType BlockButton::type()
     return btButton;
 }
 
-void BlockButton::drawGeometry()
+BoundingBox BlockButton::boundingBox()
 {
     qreal buttonHeight = on() ? 0.1 : 0.25;
     qreal buttonWidth = 0.5;
 
     vec3 offset = dirToOffset(attachment);
 
+    return qMakePair(
+        vec3(
+            position().x + (offset.x ? (1 - buttonHeight) * (offset.x * 0.5 + 0.5) : 0.25),
+            position().y + (offset.y ? (1 - buttonHeight) * (offset.y * 0.5 + 0.5) : 0.25),
+            position().z + (offset.z ? (1 - buttonHeight) * (offset.z * 0.5 + 0.5) : 0.25)
+        ),
+        vec3(
+            offset.x ? buttonHeight : buttonWidth,
+            offset.y ? buttonHeight : buttonWidth,
+            offset.z ? buttonHeight : buttonWidth
+        )
+    );
+}
+
+void BlockButton::drawGeometry()
+{
     boxhelper(
-        position().x + (offset.x ? (1 - buttonHeight) * (offset.x * 0.5 + 0.5) : 0.25),
-        position().y + (offset.y ? (1 - buttonHeight) * (offset.y * 0.5 + 0.5) : 0.25),
-        position().z + (offset.z ? (1 - buttonHeight) * (offset.z * 0.5 + 0.5) : 0.25),
-        offset.x ? buttonHeight : buttonWidth,
-        offset.y ? buttonHeight : buttonWidth,
-        offset.z ? buttonHeight : buttonWidth,
+        boundingBox(),
         QColor(192, 192, 192)
     );
 

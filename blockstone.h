@@ -10,6 +10,7 @@ public:
     explicit BlockStone(vec3 const & position, World * parent = 0);
     virtual BlockType type();
     virtual bool allowsAttachment() { return true; }
+    virtual BoundingBox boundingBox();
 
 signals:
 

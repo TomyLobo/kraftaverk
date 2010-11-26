@@ -16,6 +16,7 @@ private:
     virtual void setPower(bool on);
     virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia);
     void setCharge(int charge);
+    virtual BoundingBox boundingBox();
 
 public:
     explicit BlockWire(vec3 const & position, World * parent = 0);
