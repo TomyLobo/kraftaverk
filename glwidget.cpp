@@ -71,36 +71,44 @@ T signum(T n)
 void GLWidget::mouseMoveEvent(QMouseEvent * mouseEvent)
 {
 #ifdef DRAW_NORMAL
-    vec3 obj = unProject(mouseEvent->pos());
-    vec3 floorobj(floor(obj.x), floor(obj.y), floor(obj.z));
-    normalstart = floorobj+vec3(0.5, 0.5, 0.5);
+    do {
+        vec3 obj = unProject(mouseEvent->pos());
+        vec3 floorobj(floor(obj.x), floor(obj.y), floor(obj.z));
+        Block *block = world->blockAt(floorobj);
+        if (!block) break;
+        QPair<vec3, vec3> box = block->boundingBox();
+        boxSize = box.second;
 
-    vec3 offset = obj-normalstart;
+        normalstart = box.first + boxSize*0.5;
 
-    vec3 dir;
-    if (fabs(offset.x) > fabs(offset.y)) {
-        if (fabs(offset.z) > fabs(offset.x)) {
-            // z highest
-            dir.z = signum(offset.z);
+        vec3 offset = obj-normalstart;
+        offset /= box.second;
+
+        vec3 dir;
+        if (fabs(offset.x) > fabs(offset.y)) {
+            if (fabs(offset.z) > fabs(offset.x)) {
+                // z highest
+                dir.z = signum(offset.z);
+            }
+            else {
+                // x highest
+                dir.x = signum(offset.x);
+            }
         }
         else {
-            // x highest
-            dir.x = signum(offset.x);
+            if (fabs(offset.z) > fabs(offset.y)) {
+                // z highest
+                dir.z = signum(offset.z);
+            }
+            else {
+                // y highest (maybe x)
+                dir.y = signum(offset.y);
+            }
         }
-    }
-    else {
-        if (fabs(offset.z) > fabs(offset.y)) {
-            // z highest
-            dir.z = signum(offset.z);
-        }
-        else {
-            // y highest (maybe x)
-            dir.y = signum(offset.y);
-        }
-    }
 
-    normalvec = dir;
-    updateGL();
+        normalvec = dir;
+        updateGL();
+    } while (0);
 #endif
 
     if (mouseEvent->buttons() & Qt::RightButton) {
@@ -196,10 +204,13 @@ void GLWidget::paintGL()
     glhVertex(normalstart+normalvec*16);
     glEnd();
 
-    double x = normalstart.x-0.51;
-    double y = normalstart.y-0.51;
-    double z = normalstart.z-0.51;
-    double xs = 1.2, ys = 1.2, zs = 1.2;
+    vec3 boxs = boxSize*1.2;
+    vec3 boxp = normalstart-boxs*0.5;
+
+    double x = boxp.x;
+    double y = boxp.y;
+    double z = boxp.z;
+    double xs = boxs.x, ys = boxs.y, zs = boxs.z;
 
     glBegin(GL_LINE_LOOP);
     // top side

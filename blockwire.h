@@ -24,7 +24,7 @@ public:
 
 signals:
 
-public slots:
+protected:
     virtual void drawGeometry();
 };
 

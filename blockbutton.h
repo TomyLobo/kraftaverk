@@ -19,10 +19,7 @@ public:
 
 signals:
 
-private slots:
-    //void clicked();
-
-public slots:
+protected:
     virtual void drawGeometry();
 };
 

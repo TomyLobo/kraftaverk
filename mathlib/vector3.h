@@ -49,13 +49,19 @@ template<typename T> class vector3 {
 			z -= other.z;
 			return *this;
 		}
-		vector3 & operator*=(vector3 const & other) {
-			x *= other.x;
-			y *= other.y;
-			z *= other.z;
-			return *this;
-		}
-		friend vector3 operator+(vector3 const & lhs, vector3 const & rhs) {
+                vector3 & operator*=(vector3 const & other) {
+                        x *= other.x;
+                        y *= other.y;
+                        z *= other.z;
+                        return *this;
+                }
+                vector3 & operator/=(vector3 const & other) {
+                        x /= other.x;
+                        y /= other.y;
+                        z /= other.z;
+                        return *this;
+                }
+                friend vector3 operator+(vector3 const & lhs, vector3 const & rhs) {
 			vector3 ret(lhs);
 			ret += rhs;
 			return ret;
@@ -65,13 +71,18 @@ template<typename T> class vector3 {
 			ret -= rhs;
 			return ret;
 		}
-		friend vector3 operator*(vector3 const & lhs, vector3 const & rhs) {
-			vector3 ret(lhs);
-			ret *= rhs;
-			return ret;
-		}
+                friend vector3 operator*(vector3 const & lhs, vector3 const & rhs) {
+                        vector3 ret(lhs);
+                        ret *= rhs;
+                        return ret;
+                }
+                friend vector3 operator/(vector3 const & lhs, vector3 const & rhs) {
+                        vector3 ret(lhs);
+                        ret /= rhs;
+                        return ret;
+                }
 
-		// vector3*scalar
+                // vector3*scalar
 		vector3 & operator*=(T scalar) {
 			x *= scalar;
 			y *= scalar;

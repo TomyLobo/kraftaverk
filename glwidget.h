@@ -17,6 +17,7 @@ private:
     QPointF lastPos;
     angle<qreal> mAngle;
     vec3 normalstart, normalvec;
+    vec3 boxSize;
 
     void mouseDragged(QPointF const & delta);
 
