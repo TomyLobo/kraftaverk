@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QDockWidget * dock = new QDockWidget("Blocks", this);
     dock->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-    dock->setWidget(new DockBlockIcon(this));
+    dock->setWidget(new DockBlockIcon(dock));
     dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetVerticalTitleBar);
     addDockWidget(Qt::BottomDockWidgetArea, dock);
 

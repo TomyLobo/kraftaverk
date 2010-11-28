@@ -30,6 +30,7 @@ public:
     ~World();
 
     void insertBlock(Block * block);
+    void removeBlock(Block * block);
 
     Block * blockAt(vec3 const & position);
     void setTicked(Block *, bool ticked);

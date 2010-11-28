@@ -65,9 +65,11 @@ static inline void glhApplyPen(QPen const & pen)
     glLineWidth(pen.widthF());
 }
 
+#define DECOMPOSEV3(v) (v).x, (v).y, (v).z
+
 static inline void glhVertex(vec3 const & v)
 {
-    glVertex3d(v.x, v.y, v.z);
+    glVertex3d(DECOMPOSEV3(v));
 }
 
 #endif // HELPER_H

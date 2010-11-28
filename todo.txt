@@ -1,3 +1,4 @@
 - walk mode
 - load command line
 - build stuff
+- burn out torches

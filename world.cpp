@@ -131,6 +131,11 @@ void World::insertBlock(Block * block)
     blocks[block->position()] = block;
 }
 
+void World::removeBlock(Block * block)
+{
+    blocks.remove(block->position());
+}
+
 void World::draw()
 {
     GLdouble projection[16];

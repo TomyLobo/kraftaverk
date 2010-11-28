@@ -14,6 +14,8 @@ Block::Block(vec3 const & position, World *parent) :
 
 Block::~Block()
 {
+    if (world())
+        world()->removeBlock(this);
     setTicked(false);
 }
 
@@ -32,7 +34,8 @@ void Block::updateGeometry()
 
 void Block::draw()
 {
-    if (mDirty) updateGeometry();
+    if (mDirty)
+        updateGeometry();
 
     dlist.call();
 }

@@ -146,7 +146,11 @@ void DockBlockIcon::paintGL()
     int nIcons = icons.size();
     qreal yaw = time.elapsed()/30.0;
 
-    int highlightedIcon = mapFromGlobal(QCursor::pos()).x() / height(); // TODO: move mousecoord2index to helper
+    QPoint mouseCoords = mapFromGlobal(QCursor::pos());
+
+    int highlightedIcon = -1;
+    if (rect().contains(mouseCoords))
+        highlightedIcon = mouseCoords.x() / height(); // TODO: move mousecoord2index to helper
 
     for (int index = 0; index < nIcons; ++index) {
         bool selected = index == mActiveIcon;
