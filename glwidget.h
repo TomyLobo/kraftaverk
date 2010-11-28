@@ -1,7 +1,6 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include "mathlib/matrix4.h"
 #include "position.h"
 #include "mathlib/angle.h"
 
@@ -18,13 +17,16 @@ private:
     angle<qreal> mAngle;
     vec3 normalstart, normalvec;
     vec3 boxSize;
+    bool mDirty;
 
     void mouseDragged(QPointF const & delta);
 
 public:
     explicit GLWidget(QWidget *parent = 0);
+    ~GLWidget();
     void setWorld(World * world);
-    void setAngle(angle<qreal> angle);
+    void setAngle(angle<qreal> const & angle);
+    void setDirty();
 
 protected:
     virtual void mousePressEvent(QMouseEvent * mouseEvent);

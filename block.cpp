@@ -8,7 +8,8 @@ Block::Block(vec3 const & position, World *parent) :
     mPosition(position),
     mDirty(true)
 {
-    parent->insertBlock(this);
+    if (parent)
+        parent->insertBlock(this);
 }
 
 Block::~Block()
@@ -153,7 +154,8 @@ void Block::boxhelper(double x, double y, double z, double xs, double ys, double
 
 void Block::setTicked(bool ticked)
 {
-    world()->setTicked(this, ticked);
+    if (world())
+        world()->setTicked(this, ticked);
 }
 
 void Block::setPower(bool on, Block * poweredFrom, Block * poweredVia)
@@ -189,5 +191,6 @@ void Block::powerAllAround(vec3 const & centerPosition, bool on, Block * powered
 void Block::setDirty()
 {
     mDirty = true;
-    world()->setDirty();
+    if (world())
+        world()->setDirty();
 }

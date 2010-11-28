@@ -59,6 +59,9 @@ void BlockWire::drawGeometry()
 QList<Block *> BlockWire::neighboringWires(bool devicesToo)
 {
     QList<Block *> ret;
+
+    if (!world()) return ret;
+
     Block * blockAbove = world()->blockAt(position() + vec3(0, 1, 0));
     bool aboveBlocked = blockAbove && blockAbove->allowsAttachment();
 

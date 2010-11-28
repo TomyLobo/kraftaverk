@@ -2,11 +2,19 @@
 #include "block.h"
 #include "world.h"
 
+#include "mathlib/matrix4.h"
+
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer | QGL::Rgba | QGL::AlphaChannel | QGL::DirectRendering), parent),
-    world(0)
+    world(0),
+    mDirty(true)
 {
     setMouseTracking(true);
+}
+
+GLWidget::~GLWidget()
+{
+    makeCurrent();
 }
 
 #define DRAW_NORMAL
@@ -35,6 +43,7 @@ vec3 unProject(QPoint const & pos)
 
 void GLWidget::mousePressEvent(QMouseEvent * mouseEvent)
 {
+    makeCurrent();
     if (mouseEvent->button() == Qt::RightButton) {
         lastPos = mouseEvent->posF();
 
@@ -70,6 +79,7 @@ T signum(T n)
 
 void GLWidget::mouseMoveEvent(QMouseEvent * mouseEvent)
 {
+    makeCurrent();
 #ifdef DRAW_NORMAL
     do {
         vec3 obj = unProject(mouseEvent->pos());
@@ -107,7 +117,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent * mouseEvent)
         }
 
         normalvec = dir;
-        updateGL();
+        setDirty();
     } while (0);
 #endif
 
@@ -190,6 +200,7 @@ void GLWidget::resizeGL(int w, int h)
 
 void GLWidget::paintGL()
 {
+    mDirty = false;
     if (!world) return;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -263,14 +274,24 @@ void GLWidget::paintGL()
 #endif
 }
 
-void GLWidget::setAngle(angle<qreal> angle)
+void GLWidget::setDirty()
+{
+    if (mDirty)
+        return;
+
+    mDirty = true;
+
+    QTimer::singleShot(0, this, SLOT(updateGL()));
+}
+
+void GLWidget::setAngle(angle<qreal> const & angle)
 {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glRotated(angle.r, 0, 0, 1);
     glRotated(angle.p, 1, 0, 0);
     glRotated(angle.y, 0, 1, 0);
-    updateGL();
+    setDirty();
 }
 
 void GLWidget::setWorld(World *world)

@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "glwidget.h"
+#include "dockblockicon.h"
 #include "world.h"
 
 #include <QGridLayout>
+#include <QDockWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -12,6 +14,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     glWidget = new GLWidget;
     setCentralWidget(glWidget);
+
+    QDockWidget * dock = new QDockWidget("Blocks", this);
+    dock->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+    dock->setWidget(new DockBlockIcon(this));
+    dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetVerticalTitleBar);
+    addDockWidget(Qt::BottomDockWidgetArea, dock);
 
     initWorld("rs_latch.red");
     initMenus();
