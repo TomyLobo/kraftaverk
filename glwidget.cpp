@@ -54,13 +54,24 @@ void GLWidget::mousePressEvent(QMouseEvent * mouseEvent)
     do {
         vec3 obj = unProject(mouseEvent->pos());
 
-        obj.x = floor(obj.x);
-        obj.y = floor(obj.y);
-        obj.z = floor(obj.z);
-        Block *block = world->blockAt(obj);
+        QPair<Block *, Direction> face = world->getClosestFace(obj);
+        Block * block = face.first;
         if (!block) break;
 
-        block->clicked();
+        bool accepted = block->clicked();
+
+        if (accepted) {
+            mouseEvent->accept();
+            return;
+        }
+
+        Direction dir = face.second;
+
+        vec3 newPosition = block->position() + dirToOffset(dir);
+
+        if (world->blockAt(newPosition)) return;
+
+        world->addBlock(newPosition, Block::btStone);
 
         mouseEvent->accept();
         return;
@@ -83,40 +94,16 @@ void GLWidget::mouseMoveEvent(QMouseEvent * mouseEvent)
 #ifdef DRAW_NORMAL
     do {
         vec3 obj = unProject(mouseEvent->pos());
-        vec3 floorobj(floor(obj.x), floor(obj.y), floor(obj.z));
-        Block *block = world->blockAt(floorobj);
-        if (!block) break;
-        QPair<vec3, vec3> box = block->boundingBox();
-        boxSize = box.second;
+
+        QPair<Block *, Direction> face = world->getClosestFace(obj);
+        if (!face.first) break;
+
+        BoundingBox box = face.first->boundingBox();
 
         normalstart = box.first + boxSize*0.5;
+        boxSize = box.second;
 
-        vec3 offset = obj-normalstart;
-        offset /= box.second;
-
-        vec3 dir;
-        if (fabs(offset.x) > fabs(offset.y)) {
-            if (fabs(offset.z) > fabs(offset.x)) {
-                // z highest
-                dir.z = signum(offset.z);
-            }
-            else {
-                // x highest
-                dir.x = signum(offset.x);
-            }
-        }
-        else {
-            if (fabs(offset.z) > fabs(offset.y)) {
-                // z highest
-                dir.z = signum(offset.z);
-            }
-            else {
-                // y highest (maybe x)
-                dir.y = signum(offset.y);
-            }
-        }
-
-        normalvec = dir;
+        normalvec = dirToOffset(face.second);
         setDirty();
     } while (0);
 #endif

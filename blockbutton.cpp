@@ -86,9 +86,11 @@ void BlockButton::setOn(bool on)
     powerAllAround(attachedToPosition, mOn, this, attachedTo);
 }
 
-void BlockButton::clicked()
+bool BlockButton::clicked()
 {
     setOn(!on());
 
     setDirty();
+
+    return true;
 }

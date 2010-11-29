@@ -52,6 +52,33 @@ static inline vec3 dirToOffset(Direction direction)
     }
     return vec3();
 }
+static inline Direction offsetToDir(vec3 const & offset)
+{
+    if (offset.x == 0 && offset.y == 0 && offset.z == 0)
+        return dirNone;
+
+    if (fabs(offset.x) > fabs(offset.y)) {
+        if (fabs(offset.z) > fabs(offset.x)) {
+            // z highest
+            return offset.z > 0 ? dirWest : dirEast;
+        }
+        else {
+            // x highest
+            return offset.x > 0 ? dirSouth : dirNorth;
+        }
+    }
+    else {
+        if (fabs(offset.z) > fabs(offset.y)) {
+            // z highest
+            return offset.z > 0 ? dirWest : dirEast;
+        }
+        else {
+            // y highest (maybe x)
+            return offset.y > 0 ? dirUp : dirDown;
+        }
+    }
+}
+
 
 static inline void glhApplyBrush(QBrush const & brush)
 {

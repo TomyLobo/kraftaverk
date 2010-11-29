@@ -192,3 +192,52 @@ void World::setDirty()
     mDirty = true;
     QTimer::singleShot(0, this, SIGNAL(redrawNeeded()));
 }
+
+QPair<Block *, Direction> World::getClosestFace(vec3 const & position)
+{
+    QPair<Block *, Direction> ret(0, dirNone);
+
+    vec3 floorobj(floor(position.x), floor(position.y), floor(position.z));
+    Block *block = blockAt(floorobj);
+    if (!block) return ret;
+
+    ret.first = block;
+
+    QPair<vec3, vec3> box = block->boundingBox();
+
+    vec3 offset = position-(box.first + box.second*0.5);
+    offset /= box.second;
+
+    Direction dir = offsetToDir(offset);
+    ret.second = dir;
+
+    return ret;
+}
+
+Block * World::addBlock(vec3 const & position, Block::BlockType blockType)
+{
+    switch (blockType) {
+    case Block::btAir:
+        return 0;
+
+    case Block::btStone:
+        return new BlockStone(position, this);
+
+    case Block::btTorch:
+        return new BlockTorch(position, this);
+
+    case Block::btButton:
+        return new BlockButton(position, this);
+
+    case Block::btWire:
+        return new BlockWire(position, this);
+
+    case Block::btDoor:
+        return new BlockDoor(position, this);
+
+    case Block::btLever:
+    case Block::btPressurePlate:
+    default:
+        return 0;
+    }
+}

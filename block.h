@@ -33,7 +33,7 @@ public:
     virtual BlockType type() = 0;
     vec3 const & position() { return mPosition; }
     Direction attachment;
-    virtual void clicked() {}
+    virtual bool clicked() { return false; }
     virtual bool allowsAttachment() { return false; }
     void powerAllAround(vec3 const & centerPosition, bool on, Block * poweredFrom, Block * poweredVia);
     void setPower(bool on, Block * poweredFrom, Block * poweredVia);

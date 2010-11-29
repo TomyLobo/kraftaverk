@@ -6,10 +6,11 @@
 Block::Block(vec3 const & position, World *parent) :
     QObject(parent),
     mPosition(position),
-    mDirty(true)
+    mDirty(false)
 {
     if (parent)
         parent->insertBlock(this);
+    setDirty();
 }
 
 Block::~Block()

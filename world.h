@@ -3,14 +3,13 @@
 
 #include "position.h"
 #include "helper.h"
+#include "block.h"
 
 #include <QObject>
 #include <QMap>
 #include <QGraphicsScene>
 #include <qnumeric.h>
 #include <QSet>
-
-class Block;
 
 class World : public QObject
 {
@@ -32,10 +31,14 @@ public:
     void insertBlock(Block * block);
     void removeBlock(Block * block);
 
+    Block * addBlock(vec3 const & position, Block::BlockType);
+
     Block * blockAt(vec3 const & position);
     void setTicked(Block *, bool ticked);
 
     void setDirty();
+
+    QPair<Block *, Direction> getClosestFace(vec3 const & obj);
 
 signals:
     void redrawNeeded();
