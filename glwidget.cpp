@@ -7,7 +7,8 @@
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer | QGL::Rgba | QGL::AlphaChannel | QGL::DirectRendering), parent),
     world(0),
-    mDirty(true)
+    mDirty(true),
+    currentBlockType(Block::btStone)
 {
     setMouseTracking(true);
 }
@@ -66,26 +67,41 @@ void GLWidget::mousePressEvent(QMouseEvent * mouseEvent)
         }
 
         Direction dir = face.second;
+        vec3 offset = dirToOffset(dir);
 
-        vec3 newPosition = block->position() + dirToOffset(dir);
+        vec3 newPosition = block->position() + offset;
 
         if (world->blockAt(newPosition)) return;
 
-        world->addBlock(newPosition, Block::btStone);
+        Block * newBlock = world->addBlock(newPosition, currentBlockType);
+
+        newBlock->attachment = offsetToDir(-offset);
+        for (int direction = dirFirstFlat; direction <= dirLastFlat; ++direction) {
+            vec3 offset = dirToOffset(static_cast<Direction>(direction));
+
+            vec3 pos = newPosition + offset;
+
+            Block * block = world->blockAt(pos);
+
+            if (block && block->type() == Block::btWire)
+                block->setDirty();
+
+            block = world->blockAt(pos + vec3(0,1,0));
+
+            if (block && block->type() == Block::btWire)
+                block->setDirty();
+
+            block = world->blockAt(pos + vec3(0,-1,0));
+
+            if (block && block->type() == Block::btWire)
+                block->setDirty();
+        }
 
         mouseEvent->accept();
         return;
     } while (0);
 
     QGLWidget::mousePressEvent(mouseEvent);
-}
-
-template<typename T>
-T signum(T n)
-{
-    if (n < 0) return -1;
-    if (n > 0) return 1;
-    return 0;
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent * mouseEvent)
@@ -139,6 +155,11 @@ void GLWidget::mouseReleaseEvent(QMouseEvent * mouseEvent)
     }
 
     QGLWidget::mouseReleaseEvent(mouseEvent);
+}
+
+void GLWidget::wheelEvent(QWheelEvent * event)
+{
+    emit wheel(event->delta() > 0 ? -1 : 1);
 }
 
 void GLWidget::initializeGL()
@@ -295,4 +316,9 @@ void GLWidget::setWorld(World *world)
         connect(world, SIGNAL(redrawNeeded()), SLOT(updateGL()));
     }
     updateGL();
+}
+
+void GLWidget::setCurrentBlockType(Block::BlockType newBlockType)
+{
+    currentBlockType = newBlockType;
 }

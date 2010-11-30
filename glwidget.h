@@ -3,6 +3,7 @@
 
 #include "position.h"
 #include "mathlib/angle.h"
+#include "block.h"
 
 #include <QGLWidget>
 
@@ -18,6 +19,7 @@ private:
     vec3 normalstart, normalvec;
     vec3 boxSize;
     bool mDirty;
+    Block::BlockType currentBlockType;
 
     void mouseDragged(QPointF const & delta);
 
@@ -32,6 +34,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent * mouseEvent);
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
     virtual void mouseReleaseEvent(QMouseEvent * mouseEvent);
+    virtual void wheelEvent(QWheelEvent * event);
 
     virtual void initializeGL();
     virtual void resizeGL(int w, int h);
@@ -39,6 +42,12 @@ protected:
 
 private slots:
     void resetWorld() { setWorld(0); }
+
+signals:
+    void wheel(int direction);
+
+public slots:
+    void setCurrentBlockType(Block::BlockType newBlockType);
 };
 
 #endif // GLWIDGET_H

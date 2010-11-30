@@ -43,11 +43,7 @@ void DockBlockIcon::mousePressEvent(QMouseEvent * mouseEvent)
     if (clickedIndex >= icons.size())
         return;
 
-    if (mActiveIcon != clickedIndex) {
-        mActiveIcon = clickedIndex;
-
-        time.restart();
-    }
+    setActiveIcon(clickedIndex);
 
     mouseEvent->accept();
 }
@@ -95,11 +91,28 @@ void DockBlockIcon::drawIcon(int index, qreal yaw, bool highlighted, bool select
     }
 }
 
-/*
-void DockBlockIcon::setActiveIcon(int index) {
 
+void DockBlockIcon::setActiveIcon(int index)
+{
+    if (mActiveIcon == index)
+        return;
+
+    mActiveIcon = index;
+
+    time.restart();
+
+    emit activeBlockTypeChanged(icons[index]->type());
 }
-*/
+
+void DockBlockIcon::shiftIcon(int delta)
+{
+    int newIndex = mActiveIcon + delta;
+
+    while (newIndex < 0) newIndex += icons.size();
+    while (newIndex >= icons.size()) newIndex -= icons.size();
+
+    setActiveIcon(newIndex);
+}
 
 void DockBlockIcon::initializeGL()
 {

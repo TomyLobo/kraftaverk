@@ -188,7 +188,8 @@ void Block::powerAllAround(vec3 const & centerPosition, bool on, Block * powered
 
         Block * block = world()->blockAt(pos);
 
-        if (block) block->setPower(on, poweredFrom, poweredVia);
+        if (block)
+            block->setPower(on, poweredFrom, poweredVia);
     }
 }
 

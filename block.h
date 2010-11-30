@@ -41,6 +41,7 @@ public:
     virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia) { return false; }
     virtual void tick() {}
     virtual BoundingBox boundingBox() = 0;
+    void setDirty();
 
 protected:
     explicit Block(vec3 const & position, World * parent = 0);
@@ -54,7 +55,6 @@ protected:
     virtual void drawGeometry() = 0;
 
     void setTicked(bool ticked);
-    void setDirty();
     void updateGeometry();
 
 

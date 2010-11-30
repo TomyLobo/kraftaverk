@@ -191,6 +191,7 @@ void BlockWire::setCharge(int charge)
     implicitWireTargets << world()->blockAt(position() + vec3(0, -1, 0));
 
     foreach (Block * block, implicitWireTargets) {
+        Q_ASSERT(block);
         block->setPower(lastCharge, this, 0);
         powerAllAround(block->position(), lastCharge, this, block);
     }

@@ -17,9 +17,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     QDockWidget * dock = new QDockWidget("Blocks", this);
     dock->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-    dock->setWidget(new DockBlockIcon(dock));
+    DockBlockIcon * dbi = new DockBlockIcon(dock);
+    dock->setWidget(dbi);
     dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetVerticalTitleBar);
     addDockWidget(Qt::BottomDockWidgetArea, dock);
+
+    connect(glWidget, SIGNAL(wheel(int)), dbi, SLOT(shiftIcon(int)));
+    connect(dbi, SIGNAL(activeBlockTypeChanged(Block::BlockType)), glWidget, SLOT(setCurrentBlockType(Block::BlockType)));
 
     initWorld("rs_latch.red");
     initMenus();
