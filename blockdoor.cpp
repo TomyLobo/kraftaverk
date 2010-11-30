@@ -60,3 +60,12 @@ void BlockDoor::setPower(bool on)
 
     setDirty();
 }
+
+bool BlockDoor::validatePlacement(const vec3 & where, Block * onWhat)
+{
+    vec3 offset = where;
+    offset.y = 0;
+    attachment = offsetToDir(offset);
+
+    return true;
+}

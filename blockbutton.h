@@ -16,6 +16,7 @@ public:
     bool on();
     void setOn(bool on);
     virtual BoundingBox boundingBox();
+    virtual bool validatePlacement(const vec3 & where, Block * onWhat);
 
 signals:
 

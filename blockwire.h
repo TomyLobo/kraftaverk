@@ -21,6 +21,7 @@ private:
 public:
     explicit BlockWire(vec3 const & position, World * parent = 0);
     virtual BlockType type();
+    virtual bool validatePlacement(const vec3 & where, Block * onWhat);
 
 signals:
 

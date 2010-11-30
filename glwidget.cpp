@@ -67,6 +67,7 @@ void GLWidget::mousePressEvent(QMouseEvent * mouseEvent)
         }
 
         Direction dir = face.second;
+
         vec3 offset = dirToOffset(dir);
 
         vec3 newPosition = block->position() + offset;
@@ -75,23 +76,46 @@ void GLWidget::mousePressEvent(QMouseEvent * mouseEvent)
 
         Block * newBlock = world->addBlock(newPosition, currentBlockType);
 
-        newBlock->attachment = offsetToDir(-offset);
-        for (int direction = dirFirstFlat; direction <= dirLastFlat; ++direction) {
-            vec3 offset = dirToOffset(static_cast<Direction>(direction));
+        if (!newBlock->validatePlacement(obj-(newPosition+vec3(0.5,0.5,0.5)), block)) {
+            delete newBlock;
+            return;
+        }
 
-            vec3 pos = newPosition + offset;
+        Q_ASSERT(newBlock->type() == currentBlockType);
 
-            Block * block = world->blockAt(pos);
+        if (currentBlockType == Block::btWire) {
+            newBlock->setPower(false);
+        }
+        else {
+            Block * block; // TODO: remove shadowing
+
+            for (int direction = dirFirstFlat; direction <= dirLastFlat; ++direction) {
+                vec3 offset = dirToOffset(static_cast<Direction>(direction));
+
+                vec3 pos = newPosition + offset;
+
+                block = world->blockAt(pos);
+
+                if (block && block->type() == Block::btWire)
+                    block->setDirty();
+
+                block = world->blockAt(pos + vec3(0,1,0));
+
+                if (block && block->type() == Block::btWire)
+                    block->setDirty();
+
+                block = world->blockAt(pos + vec3(0,-1,0));
+
+                if (block && block->type() == Block::btWire)
+                    block->setDirty();
+            }
+
+            block = world->blockAt(newPosition + vec3(0,1,0));
 
             if (block && block->type() == Block::btWire)
                 block->setDirty();
 
-            block = world->blockAt(pos + vec3(0,1,0));
-
-            if (block && block->type() == Block::btWire)
-                block->setDirty();
-
-            block = world->blockAt(pos + vec3(0,-1,0));
+            block = world->blockAt(newPosition + vec3(0,-1,0));
 
             if (block && block->type() == Block::btWire)
                 block->setDirty();

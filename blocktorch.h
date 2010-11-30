@@ -18,6 +18,7 @@ public:
     virtual bool validPowerSource(Block * poweredFrom, Block * poweredVia);
     virtual void tick();
     virtual BoundingBox boundingBox();
+    virtual bool validatePlacement(const vec3 & where, Block * onWhat);
 
 signals:
 

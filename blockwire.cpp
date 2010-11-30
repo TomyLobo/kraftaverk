@@ -162,7 +162,7 @@ void BlockWire::setCharge(int charge)
     QList<Block *> wireTargets = neighboringWires();
 
     foreach (Block * block, wireTargets) {
-        Q_ASSERT(dynamic_cast<BlockWire *>(block));
+        Q_ASSERT(block->type() == btWire);
         BlockWire * wire = static_cast<BlockWire *>(block);
 
         if (wire->lastCharge < charge) {
@@ -202,4 +202,10 @@ void BlockWire::setCharge(int charge)
 BoundingBox BlockWire::boundingBox()
 {
     return qMakePair(position(), vec3(1.0, 0.1, 1.0));
+}
+
+bool BlockWire::validatePlacement(const vec3 & where, Block *onWhat)
+{
+    Block * below = world()->blockAt(position()+vec3(0, -1, 0));
+    return below && below->allowsAttachment();
 }

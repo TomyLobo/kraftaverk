@@ -80,3 +80,29 @@ BoundingBox BlockTorch::boundingBox()
     // TODO: change!
     return qMakePair(position(), vec3(1.0, 1.0, 1.0));
 }
+
+bool BlockTorch::validatePlacement(const vec3 & where, Block * onWhat)
+{
+    if (!onWhat->allowsAttachment())
+        return false;
+
+    Direction direction = offsetToDir(onWhat->position()-position());
+    switch (direction)
+    {
+    case dirEast:
+    case dirWest:
+    case dirNorth:
+    case dirSouth:
+        attachment = direction;
+        return true;
+
+    default: {
+            attachment = dirDown;
+            Block * below = world()->blockAt(position()+vec3(0, -1, 0));
+            return below && below->allowsAttachment();
+        }
+    }
+
+
+
+}

@@ -82,6 +82,8 @@ void BlockButton::setOn(bool on)
 
     Q_ASSERT(attachedTo && attachedTo->allowsAttachment());
 
+    setDirty();
+
     powerAllAround(position(), mOn, this, 0);
     powerAllAround(attachedToPosition, mOn, this, attachedTo);
 }
@@ -90,7 +92,17 @@ bool BlockButton::clicked()
 {
     setOn(!on());
 
-    setDirty();
-
     return true;
+}
+
+bool BlockButton::validatePlacement(const vec3 & where, Block * onWhat)
+{
+    if (!onWhat->allowsAttachment())
+        return false;
+
+    Direction direction = offsetToDir(onWhat->position()-position());
+
+    attachment = direction;
+
+    return direction >= dirFirstFlat && direction <= dirLastFlat;
 }

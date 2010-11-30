@@ -42,6 +42,7 @@ public:
     virtual void tick() {}
     virtual BoundingBox boundingBox() = 0;
     void setDirty();
+    virtual bool validatePlacement(const vec3 & where, Block * onWhat) { return true; }
 
 protected:
     explicit Block(vec3 const & position, World * parent = 0);
@@ -56,7 +57,6 @@ protected:
 
     void setTicked(bool ticked);
     void updateGeometry();
-
 
 private:
     DisplayList dlist;
