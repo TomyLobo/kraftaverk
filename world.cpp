@@ -163,7 +163,8 @@ void World::draw()
 
 Block * World::blockAt(vec3 const & position)
 {
-    if (!blocks.contains(position)) return 0;
+    if (!blocks.contains(position))
+        return 0;
 
     return blocks[position];
 }

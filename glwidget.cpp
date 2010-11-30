@@ -10,6 +10,8 @@ GLWidget::GLWidget(QWidget *parent) :
     mDirty(true),
     currentBlockType(Block::btStone)
 {
+    setFocus(Qt::OtherFocusReason);
+    setFocusPolicy(Qt::WheelFocus);
     setMouseTracking(true);
 }
 
@@ -184,6 +186,35 @@ void GLWidget::mouseReleaseEvent(QMouseEvent * mouseEvent)
 void GLWidget::wheelEvent(QWheelEvent * event)
 {
     emit wheel(event->delta() > 0 ? -1 : 1);
+}
+
+void GLWidget::keyPressEvent(QKeyEvent * event)
+{
+    makeCurrent();
+    switch(event->key())
+    {
+    case Qt::Key_Delete:
+        vec3 obj = unProject(mapFromGlobal(QCursor::pos()));
+
+        QPair<Block *, Direction> face = world->getClosestFace(obj);
+        if (!face.first)
+            break;
+
+        delete face.first;
+
+        world->setDirty();
+        return;
+        break;
+    }
+}
+
+void GLWidget::focusOutEvent(QFocusEvent * event)
+{
+    switch(event->reason())
+    {
+    default:
+        setFocus(Qt::OtherFocusReason);
+    }
 }
 
 void GLWidget::initializeGL()
