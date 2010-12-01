@@ -361,7 +361,7 @@ void GLWidget::setWorld(World *world)
 {
     if (this->world) {
         disconnect(this->world, SIGNAL(destroyed()), this, SLOT(resetWorld()));
-        disconnect(this->world, SIGNAL(redrawNeeded()), this, SLOT(updateGL()));
+        disconnect(this->world, SIGNAL(redrawNeeded()), this, SLOT(updateGL())); // causes qWarning, because it's invoked by the QObject dtor
     }
 
     this->world = world;

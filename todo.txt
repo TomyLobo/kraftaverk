@@ -1,4 +1,6 @@
 - walk mode
 - load command line
-- build stuff
 - burn out torches
+- clean up block box blocks
+- fake boxes for torches/wires
+- 2-high doors

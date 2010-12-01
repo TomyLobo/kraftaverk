@@ -7,6 +7,7 @@ class DisplayList
 {
 private:
     GLuint name;
+    QGLContext const * context;
 
     void initList();
 

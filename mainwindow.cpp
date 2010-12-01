@@ -37,6 +37,7 @@ MainWindow::~MainWindow()
 void MainWindow::initWorld(const QString &file)
 {
     //glWidget->setWorld(0);
+    glWidget->makeCurrent();
     delete mWorld;
     mWorld = new World(file);
     glWidget->setWorld(mWorld);
