@@ -44,6 +44,10 @@ void BlockTorch::drawGeometry()
     glBegin(GL_POINTS);
         glhVertex(top);
     glEnd();
+
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    boxhelper(boundingBox(), QBrush(), false);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 }
 
 bool BlockTorch::validPowerSource(Block * poweredFrom, Block * poweredVia)

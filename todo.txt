@@ -3,4 +3,5 @@
 - burn out torches
 - clean up block box blocks
 - fake boxes for torches/wires
+	- doesn't quite work. try a different buffer?
 - 2-high doors

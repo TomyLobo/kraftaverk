@@ -54,6 +54,10 @@ void BlockWire::drawGeometry()
         }
     }
     glEnd();
+
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    boxhelper(boundingBox(), QBrush(), false);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 }
 
 QList<Block *> BlockWire::neighboringWires(bool devicesToo)
@@ -201,7 +205,7 @@ void BlockWire::setCharge(int charge)
 
 BoundingBox BlockWire::boundingBox()
 {
-    return qMakePair(position(), vec3(1.0, 0.1, 1.0));
+    return qMakePair(position(), vec3(1.0, 1.0, 1.0));
 }
 
 bool BlockWire::validatePlacement(const vec3 & where, Block *onWhat)

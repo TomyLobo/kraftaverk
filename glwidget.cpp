@@ -271,6 +271,8 @@ void GLWidget::paintGL()
 
 #ifdef DRAW_NORMAL
     glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
     glLineWidth(1);
     glColor3d(0, .5, 1);
     glBegin(GL_LINES);
@@ -333,6 +335,8 @@ void GLWidget::paintGL()
     glVertex3d(x + xs, y + ys, z + zs);
     glVertex3d(x + xs, y + ys, z     );
     glEnd();
+
+    glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
 #endif
 }

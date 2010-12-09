@@ -41,17 +41,17 @@ void Block::draw()
     dlist.call();
 }
 
-void Block::boxhelper(BoundingBox const & box, QBrush const & brush)
+void Block::boxhelper(BoundingBox const & box, QBrush const & brush, bool outline)
 {
-    boxhelper(box.first, box.second, brush);
+    boxhelper(box.first, box.second, brush, outline);
 }
 
-void Block::boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush)
+void Block::boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush, bool outline)
 {
-    boxhelper(position.x, position.y, position.z, size.x, size.y, size.z, brush);
+    boxhelper(position.x, position.y, position.z, size.x, size.y, size.z, brush, outline);
 }
 
-void Block::boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush)
+void Block::boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush, bool outline)
 {
     QBrush brushTop = brush;
 
@@ -102,6 +102,9 @@ void Block::boxhelper(double x, double y, double z, double xs, double ys, double
     glVertex3d(x + xs, y     , z + zs);
 
     glEnd();
+
+    if (!outline)
+        return;
 
     QPen outlinePen;
     outlinePen.setWidthF(1);

@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     displaylist.cpp \
     glwidget.cpp \
     blockdoor.cpp \
-    dockblockicon.cpp
+    dockblockicon.cpp \
+    blockpressureplate.cpp
 
 HEADERS  += mainwindow.h \
     block.h \
@@ -43,7 +44,8 @@ HEADERS  += mainwindow.h \
     displaylist.h \
     glwidget.h \
     blockdoor.h \
-    dockblockicon.h
+    dockblockicon.h \
+    blockpressureplate.h
 
 RESOURCES +=
 

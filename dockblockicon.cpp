@@ -5,6 +5,7 @@
 #include "blockbutton.h"
 #include "blockwire.h"
 #include "blockdoor.h"
+#include "blockpressureplate.h"
 
 #include "mathlib/matrix4.h"
 
@@ -21,6 +22,8 @@ DockBlockIcon::DockBlockIcon(QWidget *parent) :
     icons.last()->attachment = dirDown;
     icons << new BlockDoor(vec3());
     icons.last()->attachment = dirEast;
+    icons << new BlockPressurePlate(vec3());
+    icons.last()->attachment = dirDown;
 
     startTimer(30);
 }

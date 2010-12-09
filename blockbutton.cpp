@@ -21,9 +21,9 @@ BoundingBox BlockButton::boundingBox()
 
     return qMakePair(
         vec3(
-            position().x + (offset.x ? (1 - buttonHeight) * (offset.x * 0.5 + 0.5) : 0.25),
-            position().y + (offset.y ? (1 - buttonHeight) * (offset.y * 0.5 + 0.5) : 0.25),
-            position().z + (offset.z ? (1 - buttonHeight) * (offset.z * 0.5 + 0.5) : 0.25)
+            position().x + (offset.x ? (1 - buttonHeight) * (offset.x * 0.5 + 0.5) : (1-buttonWidth)*0.5),
+            position().y + (offset.y ? (1 - buttonHeight) * (offset.y * 0.5 + 0.5) : (1-buttonWidth)*0.5),
+            position().z + (offset.z ? (1 - buttonHeight) * (offset.z * 0.5 + 0.5) : (1-buttonWidth)*0.5)
         ),
         vec3(
             offset.x ? buttonHeight : buttonWidth,

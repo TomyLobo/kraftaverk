@@ -5,6 +5,7 @@
 #include "blockbutton.h"
 #include "blockwire.h"
 #include "blockdoor.h"
+#include "blockpressureplate.h"
 
 #include "mathlib/vector4.h"
 #include "mathlib/matrix4.h"
@@ -91,6 +92,10 @@ void World::loadWorld(QString const & fileName)
 
                     case 'd':
                         lastBlock = new BlockDoor(position, this);
+                        break;
+
+                    case 'p':
+                        lastBlock = new BlockPressurePlate(position, this);
                         break;
                 }
 
@@ -236,8 +241,9 @@ Block * World::addBlock(vec3 const & position, Block::BlockType blockType)
     case Block::btDoor:
         return new BlockDoor(position, this);
 
-    case Block::btLever:
     case Block::btPressurePlate:
+        return new BlockPressurePlate(position, this);
+    case Block::btLever:
     default:
         return 0;
     }

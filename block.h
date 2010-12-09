@@ -49,9 +49,9 @@ protected:
 
     World * world();
 
-    void boxhelper(BoundingBox const & box, QBrush const & brush);
-    void boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush);
-    void boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush);
+    void boxhelper(BoundingBox const & box, QBrush const & brush, bool outline = true);
+    void boxhelper(vec3 const & position, vec3 const & size, QBrush const & brush, bool outline = true);
+    void boxhelper(double x, double y, double z, double xs, double ys, double zs, QBrush const & brush, bool outline = true);
 
     virtual void drawGeometry() = 0;
 
